@@ -39,10 +39,6 @@ void cadastrarLivros() {
     }
     char tempString[MAX_STRING];
     printf("\nCADASTRO LIVRO\n");
-    printf("Digite o ISBN: ");
-    lerStr(Livro->isbn, MAX_STRING);
-    printf("Digite o numero de copias: ");
-    scanf("%d", &Livro->numCopias);
     printf("Digite o titulo: ");
     lerStr(Livro->titulo, MAX_STRING);
     printf("Digite o(a) autor(a): ");
@@ -50,18 +46,42 @@ void cadastrarLivros() {
     printf("Digite o ano: ");
     scanf("%d", &Livro->ano);
     lerStr(tempString, MAX_STRING);     // limpa o buffer
+    printf("Digite o ISBN: ");
+    lerStr(Livro->isbn, MAX_STRING);
+    printf("Digite o numero de copias: ");
+    scanf("%d", &Livro->numCopias);
+    lerStr(tempString, MAX_STRING);
     printf("Digite a editora: ");
     lerStr(Livro->editora, MAX_STRING);
-    lerStr(tempString, MAX_STRING);
     Livro->prox = NULL;
     int ISBNhash = hashISBN(Livro->isbn);
     if(tabelaLivros[ISBNhash] != NULL) {
         Livros* atual = tabelaLivros[ISBNhash];
         while(atual != NULL) {
             if(strcmp(atual->isbn, Livro->isbn) == 0) {
-                atual->numCopias += Livro->numCopias;
+                Livro->numCopias += atual->numCopias;
+                Livros tempArq;
+                FILE *arqLivros = fopen("ArquivoLivros.bin", "rb+");
+                if(arqLivros == NULL) {
+                    arqLivros = fopen("ArquivoLivros.bin", "w+b");
+                    if(arqLivros == NULL) {
+                        printf("Erro ao criar o arquivo!\n");
+                        return;
+                    }
+                }
+                while(fread(&tempArq, sizeof(Livros), 1, arqLivros)) {
+                    if(strcmp(Livro->isbn, tempArq.isbn) == 0) {
+                        tempArq.numCopias += Livro->numCopias;
+                        fseek(arqLivros, -sizeof(Livros), SEEK_CUR);
+                        if(fwrite(&tempArq, sizeof(Livros), 1, arqLivros) != 1) {
+                            printf("Erro ao escrever no arquivo.\n");
+                        }
+                        break;
+                    }
+                }
                 free(Livro);
                 printf("Este livro já existe. Numero de copias atualizado.");
+                fclose(arqLivros);
                 return;
             }
             atual = atual->prox;
@@ -76,4 +96,17 @@ void cadastrarLivros() {
     } else {
         tabelaLivros[ISBNhash] = Livro;
     }
+    FILE *arqLivros = fopen("ArquivoLivros.bin", "rb+");
+    if(arqLivros == NULL) {
+        arqLivros = fopen("ArquivoLivros.bin", "w+b");
+        if(arqLivros == NULL) {
+            printf("Erro ao criar o arquivo!\n");
+            return;
+        }
+    }
+    fseek(arqLivros, 0, SEEK_END);
+    if (fwrite(Livro, sizeof(Livros), 1, arqLivros) != 1) {
+        printf("Erro ao escrever no arquivo.\n");
+    }
+    fclose(arqLivros);
 }
