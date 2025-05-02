@@ -18,6 +18,62 @@ int hashISBN(char* isbn) {
     }
     return soma % MAX_TAM;
 }
+
 int hashID(int id) {
     return id % MAX_TAM;
+}
+
+void lerStr(char *str, int tam) {
+    fgets(str, tam, stdin);
+    int len = strlen(str);
+    if (str[len - 1] == '\n') {
+        str[len - 1] = '\0';
+    }
+}
+
+void cadastrarLivros() {
+    Livros* Livro = malloc(sizeof(Livros));
+    if (Livro == NULL) {
+        printf("Erro de alocação!\n");
+        return;
+    }
+    char tempString[MAX_STRING];
+    printf("\nCADASTRO LIVRO\n");
+    printf("Digite o ISBN: ");
+    lerStr(Livro->isbn, MAX_STRING);
+    printf("Digite o numero de copias: ");
+    scanf("%d", &Livro->numCopias);
+    printf("Digite o titulo: ");
+    lerStr(Livro->titulo, MAX_STRING);
+    printf("Digite o(a) autor(a): ");
+    lerStr(Livro->autor, MAX_STRING);
+    printf("Digite o ano: ");
+    scanf("%d", &Livro->ano);
+    lerStr(tempString, MAX_STRING);     // limpa o buffer
+    printf("Digite a editora: ");
+    lerStr(Livro->editora, MAX_STRING);
+    lerStr(tempString, MAX_STRING);
+    Livro->prox = NULL;
+    int ISBNhash = hashISBN(Livro->isbn);
+    if(tabelaLivros[ISBNhash] != NULL) {
+        Livros* atual = tabelaLivros[ISBNhash];
+        while(atual != NULL) {
+            if(strcmp(atual->isbn, Livro->isbn) == 0) {
+                atual->numCopias += Livro->numCopias;
+                free(Livro);
+                printf("Este livro já existe. Numero de copias atualizado.");
+                return;
+            }
+            atual = atual->prox;
+        }
+    }
+    if(tabelaLivros[ISBNhash] != NULL) {
+        Livros* temp2 = tabelaLivros[ISBNhash];
+        while(temp2->prox != NULL) {
+            temp2 = temp2->prox;
+        }
+        temp2->prox = Livro;
+    } else {
+        tabelaLivros[ISBNhash] = Livro;
+    }
 }
