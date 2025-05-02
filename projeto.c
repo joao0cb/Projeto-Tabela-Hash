@@ -110,3 +110,27 @@ void cadastrarLivros() {
     }
     fclose(arqLivros);
 }
+
+Livros* ConsultarISBN(int x, char  isbn){
+    Livros* atual = tabelaLivros[x];
+
+    while(atual!=NULL){
+        if(strcmp(atual->isbn,isbn)==0){
+            return atual;
+        }
+        atual = atual->prox;
+    }
+    printf("O livro não existe!\n");
+    free(atual);
+    return NULL;
+}
+
+void exibirLivro(Livros* livro){
+    printf("----------Informações do Livro----------\n");
+    printf("ISBN: %s\n",livro->isbn);
+    printf("Título: %s\n",livro->titulo);
+    printf("Autor: %s\n",livro->autor);
+    printf("Editora: %s\n",livro->editora);
+    printf("Ano: %d\n",livro->ano);
+    printf("Cópias: %d\n\n",livro->numCopias);
+}
