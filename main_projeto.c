@@ -5,5 +5,6 @@
 #include "projeto.h"
 
 int main() {
-
+    inicializarTabelas();
+    cadastrarLivros();
 }

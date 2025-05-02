@@ -21,3 +21,9 @@ typedef struct Usuarios{
 // Tabelas Hash
 Livros* tabelaLivros[MAX_TAM];
 Usuarios* tabelaUsuarios[MAX_TAM];
+
+void inicializarTabelas();
+void lerStr(char *str, int tam);
+int hashISBN(char* isbn);
+int hashID(int id);
+void cadastrarLivros();
