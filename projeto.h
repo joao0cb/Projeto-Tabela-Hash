@@ -7,8 +7,8 @@ typedef struct Livros{
     char autor[MAX_STRING];
     int ano;
     char editora[MAX_STRING];
-    int num_copias;
-    struct Livro* prox;
+    int numCopias;
+    struct Livros* prox;
 } Livros;
 
 typedef struct Usuarios{
@@ -16,7 +16,8 @@ typedef struct Usuarios{
     char nome[MAX_STRING];
     char email[MAX_STRING];
     int telefone;
-} Usuario;
+} Usuarios;
 
+// Tabelas Hash
 Livros* tabelaLivros[MAX_TAM];
 Usuarios* tabelaUsuarios[MAX_TAM];
