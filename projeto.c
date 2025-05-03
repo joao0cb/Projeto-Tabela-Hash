@@ -31,7 +31,7 @@ void lerStr(char *str, int tam) {
     }
 }
 
-void cadastrarLivros() {
+void cadastrarLivro() {
     Livros* Livro = malloc(sizeof(Livros));
     if (Livro == NULL) {
         printf("Erro de alocação!\n");
@@ -61,9 +61,9 @@ void cadastrarLivros() {
             if(strcmp(atual->isbn, Livro->isbn) == 0) {
                 Livro->numCopias += atual->numCopias;
                 Livros tempArq;
-                FILE *arqLivros = fopen("ArquivoLivros.bin", "rb+");
+                FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
                 if(arqLivros == NULL) {
-                    arqLivros = fopen("ArquivoLivros.bin", "w+b");
+                    arqLivros = fopen("ArquivoLivros.dat", "w+b");
                     if(arqLivros == NULL) {
                         printf("Erro ao criar o arquivo!\n");
                         return;
@@ -96,9 +96,9 @@ void cadastrarLivros() {
     } else {
         tabelaLivros[ISBNhash] = Livro;
     }
-    FILE *arqLivros = fopen("ArquivoLivros.bin", "rb+");
+    FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if(arqLivros == NULL) {
-        arqLivros = fopen("ArquivoLivros.bin", "w+b");
+        arqLivros = fopen("ArquivoLivros.dat", "w+b");
         if(arqLivros == NULL) {
             printf("Erro ao criar o arquivo!\n");
             return;
@@ -111,6 +111,51 @@ void cadastrarLivros() {
     fclose(arqLivros);
 }
 
+void cadastrarUsuario() {
+    Usuarios* Usuario = malloc(sizeof(Usuarios));
+    if(Usuario == NULL) {
+        printf("Erro de alocação\n");
+        return;
+    }
+    char tempString[MAX_STRING];
+    printf("\nCADASTRO USUARIO\n");
+    printf("Digite o nome: ");
+    lerStr(Usuario->nome, MAX_STRING);
+    printf("Digite o ID: ");
+    scanf("%d", &Usuario->id);
+    lerStr(tempString, MAX_STRING);     // limpa o buffer
+    printf("Digite o e-mail: ");
+    lerStr(Usuario->email, MAX_STRING);
+    printf("Digite o telefone: ");
+    scanf("%d", &Usuario->telefone);
+    lerStr(tempString, MAX_STRING);
+    Usuario->prox = NULL;
+    int IDhash = hashID(Usuario->id);
+    if(tabelaUsuarios[IDhash] != NULL) {
+        Usuarios* atual = tabelaUsuarios[IDhash];
+        while(atual->prox != NULL) {
+            atual = atual->prox;
+        }
+        atual->prox = Usuario;
+    } else {
+        tabelaUsuarios[IDhash] = Usuario;
+    }
+    FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb+");
+    if(arqUsuarios == NULL) {
+        arqUsuarios = fopen("ArquivoUsuarios.dat", "w+b");
+        if(arqUsuarios == NULL) {
+            printf("Erro ao criar o arquivo!\n");
+            return;
+        }
+    }
+    fseek(arqUsuarios, 0, SEEK_END);
+    if (fwrite(Usuario, sizeof(Usuarios), 1, arqUsuarios) != 1) {
+        printf("Erro ao escrever no arquivo.\n");
+    }
+    fclose(arqUsuarios);
+}
+
+/*
 Livros* ConsultarISBN(int x, char  isbn){
     Livros* atual = tabelaLivros[x];
 
@@ -134,3 +179,4 @@ void exibirLivro(Livros* livro){
     printf("Ano: %d\n",livro->ano);
     printf("Cópias: %d\n\n",livro->numCopias);
 }
+*/

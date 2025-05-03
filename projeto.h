@@ -16,6 +16,7 @@ typedef struct Usuarios{
     char nome[MAX_STRING];
     char email[MAX_STRING];
     int telefone;
+    struct Usuarios* prox;
 } Usuarios;
 
 // Tabelas Hash
@@ -26,4 +27,5 @@ void inicializarTabelas();
 void lerStr(char *str, int tam);
 int hashISBN(char* isbn);
 int hashID(int id);
-void cadastrarLivros();
+void cadastrarLivro();
+void cadastrarUsuario();

@@ -6,5 +6,6 @@
 
 int main() {
     inicializarTabelas();
-    cadastrarLivros();
+    cadastrarLivro();
+    cadastrarUsuario();
 }
