@@ -129,6 +129,7 @@ void cadastrarUsuario() {
     printf("Digite o telefone: ");
     scanf("%d", &Usuario->telefone);
     lerStr(tempString, MAX_STRING);
+    Usuario->ativo = 1;
     Usuario->prox = NULL;
     int IDhash = hashID(Usuario->id);
     if(tabelaUsuarios[IDhash] != NULL) {
@@ -154,6 +155,53 @@ void cadastrarUsuario() {
     }
     fclose(arqUsuarios);
 }
+
+/*
+void atualizarEmail(){
+    int id;
+    char novoEmail[MAX_STRING];
+    printf("Digite o ID do usuario: ");
+    scanf("%d", &id);
+    getchar();
+
+    int IDhash = hashID(id);
+    Usuarios* atual = tabelaUsuarios[IDhash];
+
+    while(atual != NULL){
+        if(atual->id == id && atual->ativo == 1){
+            printf("Digite o novo e-mail: ");
+            lerStr(novoEmail, MAX_STRING);
+            strcpy(atual->email, novoEmail);
+
+            FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb+");
+            if(arqUsuarios == NULL){
+                printf("Erro ao abrir o arquivo");
+                return;
+            }
+
+            Usuarios tempUser;
+            while(fread(&tempUser, sizeof(Usuarios), 1, arqUsuarios)){
+                if(tempUser.id == id && tempUser.ativo == 1){
+                    strcpy(tempUser.email, novoEmail);
+                    fseek(arqUsuarios, -sizeof(Usuarios), SEEK_CUR);
+                    if(fwrite(&tempUser, sizeof(Usuarios), 1, arqUsuarios) != 1){
+                        printf("Erro ao atualizar o arquivo.");
+                    }else{
+                        printf("E-mail atualizado com sucesso.\n");
+                    }
+                    fclose(arqUsuarios);
+                    return;
+                }
+            }
+            fclose(arqUsuarios);
+            printf("Usuario nao encontrado no arquivo.\n");
+            return;
+        }
+        atual = atual->prox;
+    }
+    printf("Usuario nao encontrado ou esta inativo.\n");
+}
+*/
 
 /*
 Livros* ConsultarISBN(int x, char  isbn){

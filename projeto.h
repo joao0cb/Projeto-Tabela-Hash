@@ -16,6 +16,7 @@ typedef struct Usuarios{
     char nome[MAX_STRING];
     char email[MAX_STRING];
     int telefone;
+    int ativo;
     struct Usuarios* prox;
 } Usuarios;
 
