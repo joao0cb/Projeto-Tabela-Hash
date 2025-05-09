@@ -10,7 +10,7 @@ int main() {
     cadastrarUsuario();
     devolutivaDeLivros();
     Livro* livro;
-    Livro* user;
+    Usuario* user;
     int opc;
     int x;
     char isbn[20];
