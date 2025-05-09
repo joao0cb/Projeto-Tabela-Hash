@@ -31,6 +31,28 @@ void lerStr(char *str, int tam) {
     }
 }
 
+Livro* ConsultarISBN(int x, char*  isbn){
+    Livro* atual = tabelaLivros[x];
+    while(atual!=NULL){
+        if(strcmp(atual->isbn,isbn)==0){
+            return atual;
+        }
+        atual = atual->prox;
+    }
+    return NULL;
+}
+
+Usuario* ConsultarID(int x, int  id){
+    Usuario* atual = tabelaUsuarios[x];
+    while(atual!=NULL){
+        if(atual->id == id){
+            return atual;
+        }
+        atual = atual->prox;
+    }
+    return NULL;
+}
+
 void cadastrarLivro() {
     Livros* Livro = malloc(sizeof(Livros));
     if (Livro == NULL) {
