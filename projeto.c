@@ -30,6 +30,22 @@ void lerStr(char *str, int tam) {
         str[len - 1] = '\0';
     }
 }
+void exibirLivro(Livro* livro){
+    printf("----------Informações do Livro----------\n");
+    printf("ISBN: %s\n",livro->isbn);
+    printf("Título: %s\n",livro->titulo);
+    printf("Autor: %s\n",livro->autor);
+    printf("Editora: %s\n",livro->editora);
+    printf("Ano: %d\n",livro->ano);
+    printf("Cópias: %d\n\n",livro->copias);
+}
+
+void exibirUsuario(Usuario* user){
+    printf("----------Informações do Usuário----------\n");
+    printf("ID: %d\n",user->id);
+    printf("Nome: %s\n",user->nome);
+    printf("Email: %s\n\n",user->email);
+}
 
 Livro* ConsultarISBN(int x, char*  isbn){
     Livro* atual = tabelaLivros[x];
