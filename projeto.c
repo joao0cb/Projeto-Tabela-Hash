@@ -4,6 +4,9 @@
 
 #include "projeto.h"
 
+Livros* tabelaLivros[MAX_TAM];
+Usuarios* tabelaUsuarios[MAX_TAM];
+
 void inicializarTabelas() {
     for (int i = 0; i < MAX_TAM; i++) {
         tabelaLivros[i] = NULL;
@@ -281,3 +284,59 @@ void exibirLivro(Livros* livro){
 
 // gcc main_projeto.c projeto.c -o hash.exe
 // ./hash
+
+void emprestarLivro() {
+    char isbn[20];
+    int id;
+    char tempString[MAX_STRING];
+
+    printf("\n------EMPRESTIMO DE LIVRO------\n");
+    printf("Digite o ISBN do livro: ");
+    lerStr(isbn, MAX_STRING);
+    int hashL = hashISBN(isbn);
+    Livros* livro = ConsultarISBN(hashL, isbn);
+
+    if (livro == NULL) {
+        printf("Livro nao encontrado.\n");
+        return;
+    } else if (livro->numCopias <= 0) {
+        printf("Nao ha copias disponiveis.\n");
+        return;
+    }
+    printf("Digite o ID do usuario: ");
+    scanf("%d", &id);
+    lerStr(tempString, MAX_STRING);
+    int hashU = hashID(id);
+    Usuarios* user = ConsultarID(hashU, id);
+
+    if (user == NULL || user->ativo == 0) {
+        printf("Usuario nao encontrado ou inativo.\n");
+        return;
+    }
+
+    livro->numCopias--;
+    FILE* arqLivros = fopen("ArquivoLivros.dat", "rb+");
+    if (arqLivros == NULL) {
+        printf("Erro ao abrir o arquivo de livros.\n");
+        return;
+    }
+    Livros temp;
+    while (fread(&temp, sizeof(Livros), 1, arqLivros)) {
+        if (strcmp(temp.isbn, isbn) == 0) {
+            temp.numCopias = livro->numCopias;
+            fseek(arqLivros, -sizeof(Livros), SEEK_CUR);
+            fwrite(&temp, sizeof(Livros), 1, arqLivros);
+            break;
+        }
+    }
+    fclose(arqLivros);
+
+    FILE* emprestimos = fopen("Emprestimos.txt", "a");
+    if (emprestimos == NULL) {
+        printf("Erro ao abrir arquivo de emprestimos.\n");
+        return;
+    }
+    fprintf(emprestimos, "Usuario com ID %d pegou o livro ISBN %s emprestado\n", id, isbn);
+    fclose(emprestimos);
+    printf("Emprestimo realizado com sucesso!\n");
+}

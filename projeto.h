@@ -21,14 +21,15 @@ typedef struct Usuarios{
 } Usuarios;
 
 // Tabelas Hash
-Livros* tabelaLivros[MAX_TAM];
-Usuarios* tabelaUsuarios[MAX_TAM];
+extern Livros* tabelaLivros[MAX_TAM];
+extern Usuarios* tabelaUsuarios[MAX_TAM];
 
 void inicializarTabelas();
 void lerStr(char *str, int tam);
 int hashISBN(char* isbn);
 int hashID(int id);
 void atualizarNumCopias(char* isbn);
+void emprestarLivro();
 
 Livros* ConsultarISBN(int x, char* isbn);
 void cadastrarLivro(char* isbn);
