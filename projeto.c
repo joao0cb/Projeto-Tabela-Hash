@@ -163,13 +163,8 @@ void cadastrarUsuario() {
     fclose(arqUsuarios);
 }
 
-void atualizarNumCopias(){
-    char isbn[20];
+void atualizarNumCopias(char* isbn){
     char tempString[MAX_STRING];
-
-    printf("Digite o ISBN do livro: ");
-    lerStr(isbn, MAX_STRING);
-    lerStr(tempString, MAX_STRING);        // limpa o buffer
 
     int ISBNhash = hashISBN(isbn);
     Livros* atual = tabelaLivros[ISBNhash];

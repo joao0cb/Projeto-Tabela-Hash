@@ -11,6 +11,7 @@ int main() {
     int x;
     char isbn[20];
     int id;
+    char tempString[MAX_STRING];
     inicializarTabelas();
     do{
     printf("---------------MENU-----------------\n");
@@ -39,7 +40,7 @@ int main() {
                 printf("O livro ja existe na biblioteca\nDeseja adicionar uma nova copia? Resposta(S/N): ");
                 lerStr(resp, 3);
                 if (strcmp(resp, "S") == 0 || strcmp(resp, "s") == 0) {
-                    atualizarNumCopias();
+                    atualizarNumCopias(isbn);
                 }
             }
             break;
@@ -76,7 +77,9 @@ int main() {
             break;
         
         case 5:
-            atualizarNumCopias();
+            printf("Digite o ISBN do livro: ");
+            lerStr(isbn, MAX_STRING);   
+            atualizarNumCopias(isbn);
             break;
         default:
             break;

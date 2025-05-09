@@ -9,7 +9,7 @@ typedef struct Livros{
     char editora[MAX_STRING];
     int numCopias;
     struct Livros* prox;
-} Livros;
+} Livros;   
 
 typedef struct Usuarios{
     int id;
@@ -28,7 +28,7 @@ void inicializarTabelas();
 void lerStr(char *str, int tam);
 int hashISBN(char* isbn);
 int hashID(int id);
-void atualizarNumCopias();
+void atualizarNumCopias(char* isbn);
 
 Livros* ConsultarISBN(int x, char* isbn);
 void cadastrarLivro(char* isbn);
