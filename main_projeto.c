@@ -8,12 +8,11 @@ int main() {
     Livros* Livro;
     Usuarios* Usuario;
     int opc;
-    int x;
     char isbn[20];
     int id;
     char tempString[MAX_STRING];
     inicializarTabelas();
-    do{
+    do {
     printf("---------------MENU-----------------\n");
     printf("1-Cadastrar Livro\n");
     printf("2-Consultar Livro\n");
@@ -22,18 +21,17 @@ int main() {
     printf("5-Atualizar o Numero de Copias\n");    
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
-    scanf("%d",&opc);
+    scanf("%d", &opc);
     getchar();
     switch(opc){
         case 1:
+            printf("\nCADASTRO LIVRO\n");
             printf("Insira o ISBN do livro: ");
             lerStr(isbn, 20);
-        
-            x = hashISBN(isbn);
-
-            Livro = ConsultarISBN(x,isbn);
+            int ISBNhash = hashISBN(isbn);
+            Livro = ConsultarISBN(ISBNhash,isbn);
             if(Livro == NULL){
-                cadastrarLivro(isbn); // Vai inserir no início
+                cadastrarLivro(isbn);
                 printf("Livro cadastrado com sucesso!\n");
             }else{
                 char resp[3];
@@ -47,10 +45,8 @@ int main() {
         case 2:
             printf("Insira o ISBN do livro: ");
             lerStr(isbn, 20);
-        
-            x = hashISBN(isbn);
-
-            Livro = ConsultarISBN(x, isbn);
+            ISBNhash = hashISBN(isbn);
+            Livro = ConsultarISBN(ISBNhash, isbn);
             if(Livro != NULL){
                 exibirLivro(Livro);
             }else{
@@ -58,30 +54,26 @@ int main() {
             }
             break;
         case 3:
-        
             cadastrarUsuario();
             break;
         case 4:
-            
             printf("Insira o ID do usuario: ");
             scanf("%d", &id);
-        
-            x = hashID(id);
-
-            Usuario = ConsultarID(x, id);
+            int IDhash = hashID(id);
+            Usuario = ConsultarID(IDhash, id);
             if(Usuario != NULL){
                 exibirUsuario(Usuario);
             }else{
                 printf("O Usuario nao existe!\n");
             }
             break;
-        
         case 5:
             printf("Digite o ISBN do livro: ");
             lerStr(isbn, MAX_STRING);   
             atualizarNumCopias(isbn);
             break;
         default:
+            printf("Opcao invalida!\n");
             break;
         }
     } while(opc !=0);

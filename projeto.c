@@ -72,12 +72,11 @@ Usuarios* ConsultarID(int x, int  id){
 
 void cadastrarLivro(char* isbn){
     Livros* Livro = malloc(sizeof(Livros));
+    char tempString[MAX_STRING];
     if (Livro == NULL) {
         printf("Erro de alocacao!\n");
         return;
     }
-    char tempString[MAX_STRING];
-    printf("\nCADASTRO LIVRO\n");
     printf("Digite o titulo: ");
     lerStr(Livro->titulo, MAX_STRING);
     printf("Digite o(a) autor(a): ");
@@ -92,17 +91,9 @@ void cadastrarLivro(char* isbn){
     printf("Digite a editora: ");
     lerStr(Livro->editora, MAX_STRING);
     Livro->prox = NULL;
-
     int ISBNhash = hashISBN(Livro->isbn);
-    if(tabelaLivros[ISBNhash] != NULL) {
-        Livros* temp2 = tabelaLivros[ISBNhash];
-        while(temp2->prox != NULL) {
-            temp2 = temp2->prox;
-        }
-        temp2->prox = Livro;
-    } else {
-        tabelaLivros[ISBNhash] = Livro;
-    }
+    Livro->prox = tabelaLivros[ISBNhash];
+    tabelaLivros[ISBNhash] = Livro;
     FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if(arqLivros == NULL) {
         arqLivros = fopen("ArquivoLivros.dat", "w+b");
@@ -120,11 +111,11 @@ void cadastrarLivro(char* isbn){
 
 void cadastrarUsuario() {
     Usuarios* Usuario = malloc(sizeof(Usuarios));
+    char tempString[MAX_STRING];
     if(Usuario == NULL) {
         printf("Erro de alocacao\n");
         return;
     }
-    char tempString[MAX_STRING];
     printf("\nCADASTRO USUARIO\n");
     printf("Digite o nome: ");
     lerStr(Usuario->nome, MAX_STRING);
@@ -139,15 +130,8 @@ void cadastrarUsuario() {
     Usuario->ativo = 1;
     Usuario->prox = NULL;
     int IDhash = hashID(Usuario->id);
-    if(tabelaUsuarios[IDhash] != NULL) {
-        Usuarios* atual = tabelaUsuarios[IDhash];
-        while(atual->prox != NULL) {
-            atual = atual->prox;
-        }
-        atual->prox = Usuario;
-    } else {
-        tabelaUsuarios[IDhash] = Usuario;
-    }
+    Usuario->prox = tabelaUsuarios[IDhash];
+    tabelaUsuarios[IDhash] = Usuario;
     FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb+");
     if(arqUsuarios == NULL) {
         arqUsuarios = fopen("ArquivoUsuarios.dat", "w+b");
