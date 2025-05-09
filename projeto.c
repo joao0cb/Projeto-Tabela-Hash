@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -30,25 +30,26 @@ void lerStr(char *str, int tam) {
         str[len - 1] = '\0';
     }
 }
-void exibirLivro(Livro* livro){
-    printf("----------Informações do Livro----------\n");
+
+void exibirLivro(Livros* livro){
+    printf("----------Informacoes do Livro----------\n");
     printf("ISBN: %s\n",livro->isbn);
-    printf("Título: %s\n",livro->titulo);
+    printf("Titulo: %s\n",livro->titulo);
     printf("Autor: %s\n",livro->autor);
     printf("Editora: %s\n",livro->editora);
     printf("Ano: %d\n",livro->ano);
-    printf("Cópias: %d\n\n",livro->copias);
+    printf("Copias: %d\n\n",livro->numCopias);
 }
 
-void exibirUsuario(Usuario* user){
-    printf("----------Informações do Usuário----------\n");
+void exibirUsuario(Usuarios* user){
+    printf("----------Informacoes do Usuario----------\n");
     printf("ID: %d\n",user->id);
     printf("Nome: %s\n",user->nome);
     printf("Email: %s\n\n",user->email);
 }
 
-Livro* ConsultarISBN(int x, char*  isbn){
-    Livro* atual = tabelaLivros[x];
+Livros* ConsultarISBN(int x, char*  isbn){
+    Livros* atual = tabelaLivros[x];
     while(atual!=NULL){
         if(strcmp(atual->isbn,isbn)==0){
             return atual;
@@ -58,8 +59,8 @@ Livro* ConsultarISBN(int x, char*  isbn){
     return NULL;
 }
 
-Usuario* ConsultarID(int x, int  id){
-    Usuario* atual = tabelaUsuarios[x];
+Usuarios* ConsultarID(int x, int  id){
+    Usuarios* atual = tabelaUsuarios[x];
     while(atual!=NULL){
         if(atual->id == id){
             return atual;
@@ -69,10 +70,10 @@ Usuario* ConsultarID(int x, int  id){
     return NULL;
 }
 
-void cadastrarLivro() {
+void cadastrarLivro(char* isbn){
     Livros* Livro = malloc(sizeof(Livros));
     if (Livro == NULL) {
-        printf("Erro de alocação!\n");
+        printf("Erro de alocacao!\n");
         return;
     }
     char tempString[MAX_STRING];
@@ -83,48 +84,16 @@ void cadastrarLivro() {
     lerStr(Livro->autor, MAX_STRING);
     printf("Digite o ano: ");
     scanf("%d", &Livro->ano);
-    lerStr(tempString, MAX_STRING);     // limpa o buffer
-    printf("Digite o ISBN: ");
-    lerStr(Livro->isbn, MAX_STRING);
+    lerStr(tempString, MAX_STRING);        // limpa o buffer
+    strcpy(Livro->isbn, isbn);
     printf("Digite o numero de copias: ");
     scanf("%d", &Livro->numCopias);
     lerStr(tempString, MAX_STRING);
     printf("Digite a editora: ");
     lerStr(Livro->editora, MAX_STRING);
     Livro->prox = NULL;
+
     int ISBNhash = hashISBN(Livro->isbn);
-    if(tabelaLivros[ISBNhash] != NULL) {
-        Livros* atual = tabelaLivros[ISBNhash];
-        while(atual != NULL) {
-            if(strcmp(atual->isbn, Livro->isbn) == 0) {
-                Livro->numCopias += atual->numCopias;
-                Livros tempArq;
-                FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
-                if(arqLivros == NULL) {
-                    arqLivros = fopen("ArquivoLivros.dat", "w+b");
-                    if(arqLivros == NULL) {
-                        printf("Erro ao criar o arquivo!\n");
-                        return;
-                    }
-                }
-                while(fread(&tempArq, sizeof(Livros), 1, arqLivros)) {
-                    if(strcmp(Livro->isbn, tempArq.isbn) == 0) {
-                        tempArq.numCopias += Livro->numCopias;
-                        fseek(arqLivros, -sizeof(Livros), SEEK_CUR);
-                        if(fwrite(&tempArq, sizeof(Livros), 1, arqLivros) != 1) {
-                            printf("Erro ao escrever no arquivo.\n");
-                        }
-                        break;
-                    }
-                }
-                free(Livro);
-                printf("Este livro já existe. Numero de copias atualizado.");
-                fclose(arqLivros);
-                return;
-            }
-            atual = atual->prox;
-        }
-    }
     if(tabelaLivros[ISBNhash] != NULL) {
         Livros* temp2 = tabelaLivros[ISBNhash];
         while(temp2->prox != NULL) {
@@ -152,7 +121,7 @@ void cadastrarLivro() {
 void cadastrarUsuario() {
     Usuarios* Usuario = malloc(sizeof(Usuarios));
     if(Usuario == NULL) {
-        printf("Erro de alocação\n");
+        printf("Erro de alocacao\n");
         return;
     }
     char tempString[MAX_STRING];
@@ -194,7 +163,53 @@ void cadastrarUsuario() {
     fclose(arqUsuarios);
 }
 
-void devolutivaDeLivros(); { 
+void atualizarNumCopias(){
+    char isbn[20];
+    char tempString[MAX_STRING];
+
+    printf("Digite o ISBN do livro: ");
+    lerStr(isbn, MAX_STRING);
+    lerStr(tempString, MAX_STRING);        // limpa o buffer
+
+    int ISBNhash = hashISBN(isbn);
+    Livros* atual = tabelaLivros[ISBNhash];
+
+    while(atual != NULL){
+        if(strcmp(atual->isbn, isbn) == 0){
+            int x;
+            printf("Digite quantas copias voce quer adicionar: ");
+            scanf("%d",&x);
+            atual->numCopias += x;
+            printf("Copias adicionadas! Total de copias: %d\n", atual->numCopias);
+
+            FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
+            if(arqLivros == NULL){
+                printf("Erro ao criar o arquivo!\n");
+                return;
+            }
+
+            Livros tempLivro;
+            while(fread(&tempLivro, sizeof(Livros), 1, arqLivros)){
+                if(strcmp(tempLivro.isbn, isbn) == 0){
+                    tempLivro.numCopias = atual->numCopias;
+                    fseek(arqLivros, -sizeof(Livros), SEEK_CUR);
+                    if(fwrite(&tempLivro, sizeof(Livros), 1, arqLivros) != 1){
+                        printf("Erro ao atualizar o arquivo.");
+                    }else{
+                        printf("Copias adicionadas no arquivo! Total de copias: %d\n", atual->numCopias);
+                    }
+                    fclose(arqLivros);
+                    return;
+                }
+            }
+            fclose(arqLivros);
+            printf("Livro nao encontrado no arquivo.\n");
+            return;
+        }
+        atual = atual->prox;
+    }
+}
+
 /*
 void atualizarEmail(){
     int id;
@@ -267,3 +282,6 @@ void exibirLivro(Livros* livro){
     printf("Cópias: %d\n\n",livro->numCopias);
 }
 */
+
+// gcc main_projeto.c projeto.c -o hash.exe
+// ./hash
