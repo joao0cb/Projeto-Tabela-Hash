@@ -8,4 +8,5 @@ int main() {
     inicializarTabelas();
     cadastrarLivro();
     cadastrarUsuario();
+    devolverLivro();
 }
