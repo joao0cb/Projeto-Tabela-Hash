@@ -195,13 +195,6 @@ void cadastrarUsuario() {
 }
 
 void devolutivaDeLivros(); { 
-char isbn[MAX_STRING];
-int idUsuario;
-printf("\nDEVOLUÇÃO DE LIVROS\n");
-printf("Digite o ISBN do livro: "); 
-lerStr(isbn, MAX_STRING);
-printf("Digite o ID do Usuário: ");
-scanf("%d", &idUsuario);
 /*
 void atualizarEmail(){
     int id;
