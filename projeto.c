@@ -174,6 +174,7 @@ void atualizarNumCopias(char* isbn){
             int x;
             printf("Digite quantas copias voce quer adicionar: ");
             scanf("%d",&x);
+            lerStr(tempString, MAX_STRING);
             atual->numCopias += x;
             printf("Copias adicionadas! Total de copias: %d\n", atual->numCopias);
 
