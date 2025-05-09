@@ -156,6 +156,8 @@ void cadastrarUsuario() {
     fclose(arqUsuarios);
 }
 
+void devolutivaDeLivros(); 
+
 /*
 void atualizarEmail(){
     int id;
