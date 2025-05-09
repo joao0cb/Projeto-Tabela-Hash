@@ -19,6 +19,7 @@ int main() {
     printf("3-Cadastrar Usuario\n");
     printf("4-Consultar Usuario\n");
     printf("5-Atualizar o Numero de Copias\n");    
+    printf("6-Emprestimo de Livros\n");   
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
@@ -71,6 +72,9 @@ int main() {
             printf("Digite o ISBN do livro: ");
             lerStr(isbn, MAX_STRING);   
             atualizarNumCopias(isbn);
+            break;
+        case 6:
+            emprestarLivro();
             break;
         default:
             printf("Opcao invalida!\n");
