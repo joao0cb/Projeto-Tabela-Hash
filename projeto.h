@@ -30,6 +30,7 @@ int hashISBN(char* isbn);
 int hashID(int id);
 void atualizarNumCopias(char* isbn);
 void emprestarLivro();
+void devolutivaLivros();
 
 Livros* ConsultarISBN(int x, char* isbn);
 void cadastrarLivro(char* isbn);
@@ -39,4 +40,3 @@ Usuarios* ConsultarID(int x, int id);
 void cadastrarUsuario();
 void exibirUsuario(Usuarios* user);
 
-// void devolutivaDeLivros();
