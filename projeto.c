@@ -324,3 +324,82 @@ void emprestarLivro() {
     fclose(emprestimos);
     printf("Emprestimo realizado com sucesso!\n");
 }
+
+void devolutivaLivros() {
+    char isbn[20];
+    int id;
+    char tempString[MAX_STRING];
+    int diasAtraso = 0;
+    float multa = 0.0;
+
+    printf("\n------DEVOLUCAO DE LIVRO------\n");
+    
+    printf("Digite o ISBN do livro: ");
+    lerStr(isbn, MAX_STRING);
+    int hashL = hashISBN(isbn);
+    Livros* livro = ConsultarISBN(hashL, isbn);
+
+    if (livro == NULL) {
+        printf("Livro nao encontrado.\n");
+        return;
+    }
+    
+    printf("Digite o ID do usuario: ");
+    scanf("%d", &id);
+    lerStr(tempString, MAX_STRING);
+    int hashU = hashID(id);
+    Usuarios* user = ConsultarID(hashU, id);
+
+    if (user == NULL || user->ativo == 0) {
+        printf("Usuario nao encontrado ou inativo.\n");
+        return;
+    }
+
+    printf("Digite o numero de dias de atraso (0 se nenhum): ");
+    scanf("%d", &diasAtraso);
+    lerStr(tempString, MAX_STRING);
+    
+    if (diasAtraso > 0) {
+        multa = diasAtraso * 0.50; 
+        printf("Multa calculada: R$%.2f\n", multa);
+    }
+    
+    livro->numCopias++;
+    
+    FILE* arqLivros = fopen("ArquivoLivros.dat", "rb+");
+    if (arqLivros == NULL) {
+        printf("Erro ao abrir o arquivo de livros.\n");
+        return;
+    }
+    
+    Livros tempLivro;
+    while (fread(&tempLivro, sizeof(Livros), 1, arqLivros)) {
+        if (strcmp(tempLivro.isbn, isbn) == 0) {
+            tempLivro.numCopias = livro->numCopias;
+            fseek(arqLivros, -sizeof(Livros), SEEK_CUR);
+            fwrite(&tempLivro, sizeof(Livros), 1, arqLivros);
+            break;
+        }
+    }
+    fclose(arqLivros);
+
+    FILE* transacoes = fopen("Transacoes.txt", "a");
+    if (transacoes == NULL) {
+        printf("Erro ao abrir arquivo de transacoes.\n");
+        return;
+    }
+    
+    fprintf(transacoes, "DEVOLUCAO - Livro ISBN: %s - Usuario ID: %d", isbn, id);
+    if (diasAtraso > 0) {
+        fprintf(transacoes, " - Dias de atraso: %d - Multa: R$%.2f", diasAtraso, multa);
+    }
+    fprintf(transacoes, "\n");
+    
+    fclose(transacoes);
+    
+    printf("Devolucao registrada com sucesso!\n");
+    printf("Numero atual de copias disponiveis: %d\n", livro->numCopias);
+    if (multa > 0) {
+        printf("Multa a ser paga: R$%.2f\n", multa);
+    }
+}
