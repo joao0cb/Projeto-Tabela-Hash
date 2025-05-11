@@ -19,13 +19,15 @@ int main() {
     printf("2-Consultar Livro\n");
     printf("3-Cadastrar Usuario\n");
     printf("4-Consultar Usuario\n");
-    printf("5-Atualizar o Numero de Copias\n");    
-    printf("6-Emprestimo de Livros\n");   
-    printf("7-Devolutiva de Livros\n");  
+    printf("5-Atualizar o Numero de Copias\n");
+    printf("6-Atualizar Dado\n");   
+    printf("7-Emprestimo de Livros\n");   
+    printf("8-Devolutiva de Livros\n");
+    printf("9-Desativar Usuario\n");
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
-    getchar();
+    lerStr(tempString, MAX_STRING);
     switch(opc){
         case 1:
             printf("\nCADASTRO LIVRO\n");
@@ -62,6 +64,7 @@ int main() {
         case 4:
             printf("Insira o ID do usuario: ");
             scanf("%d", &id);
+            lerStr(tempString, MAX_STRING);
             int IDhash = hashID(id);
             Usuario = ConsultarID(IDhash, id);
             if(Usuario != NULL){
@@ -76,10 +79,16 @@ int main() {
             atualizarNumCopias(isbn);
             break;
         case 6:
-            emprestarLivro();
+            atualizarDado();
             break;
         case 7:
+            emprestarLivro();
+            break;
+        case 8:
             devolutivaLivros();
+            break;
+        case 9:
+            desativarUsuario();
             break;
         case 0:
             break;

@@ -34,21 +34,25 @@ void lerStr(char *str, int tam) {
     }
 }
 
-void exibirLivro(Livros* livro){
+void exibirLivro(Livros* Livro){
     printf("\n----------Informacoes do Livro----------\n");
-    printf("ISBN: %s\n",livro->isbn);
-    printf("Titulo: %s\n",livro->titulo);
-    printf("Autor: %s\n",livro->autor);
-    printf("Editora: %s\n",livro->editora);
-    printf("Ano: %d\n",livro->ano);
-    printf("Copias: %d\n\n",livro->numCopias);
+    printf("ISBN: %s\n", Livro->isbn);
+    printf("Titulo: %s\n", Livro->titulo);
+    printf("Autor: %s\n", Livro->autor);
+    printf("Editora: %s\n", Livro->editora);
+    printf("Ano: %d\n", Livro->ano);
+    printf("Copias: %d\n\n", Livro->numCopias);
 }
 
-void exibirUsuario(Usuarios* user){
+void exibirUsuario(Usuarios* Usuario){
     printf("----------Informacoes do Usuario----------\n");
-    printf("ID: %d\n",user->id);
-    printf("Nome: %s\n",user->nome);
-    printf("Email: %s\n\n",user->email);
+    printf("ID: %d\n", Usuario->id);
+    printf("Nome: %s\n", Usuario->nome);
+    printf("Email: %s\n", Usuario->email);
+    printf("Telefone: %s\n\n", Usuario->telefone);
+    if(Usuario->ativo == 0){
+        printf("USUARIO DESATIVADO\n\n");
+    }
 }
 
 Livros* ConsultarISBN(int x, char*  isbn){
@@ -94,10 +98,6 @@ void cadastrarLivro(char* isbn){
     printf("Digite a editora: ");
     lerStr(Livro->editora, MAX_STRING);
     Livro->prox = NULL;
-    int ISBNhash = hashISBN(Livro->isbn);
-    Livro->prox = tabelaLivros[ISBNhash];
-    tabelaLivros[ISBNhash] = Livro;
-    Livro->prox = NULL;
     FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if(arqLivros == NULL) {
         arqLivros = fopen("ArquivoLivros.dat", "w+b");
@@ -111,6 +111,9 @@ void cadastrarLivro(char* isbn){
         printf("Erro ao escrever no arquivo.\n");
     }
     fclose(arqLivros);
+    int ISBNhash = hashISBN(Livro->isbn);
+    Livro->prox = tabelaLivros[ISBNhash];
+    tabelaLivros[ISBNhash] = Livro;
 }
 
 void cadastrarUsuario() {
@@ -129,13 +132,8 @@ void cadastrarUsuario() {
     printf("Digite o e-mail: ");
     lerStr(Usuario->email, MAX_STRING);
     printf("Digite o telefone: ");
-    scanf("%d", &Usuario->telefone);
-    lerStr(tempString, MAX_STRING);
+    lerStr(Usuario->telefone, MAX_STRING);
     Usuario->ativo = 1;
-    Usuario->prox = NULL;
-    int IDhash = hashID(Usuario->id);
-    Usuario->prox = tabelaUsuarios[IDhash];
-    tabelaUsuarios[IDhash] = Usuario;
     Usuario->prox = NULL;
     FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb+");
     if(arqUsuarios == NULL) {
@@ -150,6 +148,9 @@ void cadastrarUsuario() {
         printf("Erro ao escrever no arquivo.\n");
     }
     fclose(arqUsuarios);
+    int IDhash = hashID(Usuario->id);
+    Usuario->prox = tabelaUsuarios[IDhash];
+    tabelaUsuarios[IDhash] = Usuario;
 }
 
 void atualizarNumCopias(char* isbn){
@@ -195,83 +196,431 @@ void atualizarNumCopias(char* isbn){
     }
 }
 
-/*
-void atualizarEmail(){
+void atualizarDado() {
+    int opc;
+    int opcLivro;
+    int opcUsuario;
     int id;
+    int novoAno;
+    int novoID;
+    int IDhash;
+    int ISBNhash;
+    char novoTelefone[MAX_STRING];
+    char isbn[MAX_STRING];
+    char tempString[MAX_STRING];
+    char novoISBN[MAX_STRING];
+    char novoTitulo[MAX_STRING];
+    char novoAutor[MAX_STRING];
+    char novoEditora[MAX_STRING];
+    char novoNome[MAX_STRING];
     char novoEmail[MAX_STRING];
-    printf("Digite o ID do usuario: ");
-    scanf("%d", &id);
-    getchar();
+    Usuarios* atual = NULL;
+    Livros* atualB = NULL;
+    printf("---------------ATUALIZAR-----------------\n");
+    printf("1-Livro\n");
+    printf("2-Usuario\n");
+    printf("3-Voltar\n");
+    printf("Escolha uma opcao para atualizar: ");
+    scanf("%d", &opc);
+    lerStr(tempString, MAX_STRING);
+    switch (opc) {
+        case 1:
+            printf("---------------MENU-----------------\n");
+            printf("1-ISBN\n");
+            printf("2-Titulo\n");
+            printf("3-Autor\n");
+            printf("4-Ano\n");
+            printf("5-Editora\n");
+            printf("6-Voltar\n");
+            printf("Escolha um dado para atualiza-lo: ");
+            scanf("%d", &opcLivro);
+            lerStr(tempString, MAX_STRING);
+            switch (opcLivro) {
+                case 1:  // isbn
+                    ; // NAO REMOVA ESSE ; POR FAVOR .
+                    char isbnAntigo[MAX_STRING];
+                    char isbnNovo[MAX_STRING];
+                    int hashAntigo, hashNovo;
+                    Livros *livroAntigo = NULL, *livroNovo = NULL, *anterior = NULL;
 
-    int IDhash = hashID(id);
-    Usuarios* atual = tabelaUsuarios[IDhash];
+                    printf("Digite o ISBN atual do livro: ");
+                    lerStr(isbnAntigo, MAX_STRING);
+                    hashAntigo = hashISBN(isbnAntigo);
+                    livroAntigo = tabelaLivros[hashAntigo];
 
-    while(atual != NULL){
-        if(atual->id == id && atual->ativo == 1){
-            printf("Digite o novo e-mail: ");
-            lerStr(novoEmail, MAX_STRING);
-            strcpy(atual->email, novoEmail);
-
-            FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb+");
-            if(arqUsuarios == NULL){
-                printf("Erro ao abrir o arquivo");
-                return;
-            }
-
-            Usuarios tempUser;
-            while(fread(&tempUser, sizeof(Usuarios), 1, arqUsuarios)){
-                if(tempUser.id == id && tempUser.ativo == 1){
-                    strcpy(tempUser.email, novoEmail);
-                    fseek(arqUsuarios, -sizeof(Usuarios), SEEK_CUR);
-                    if(fwrite(&tempUser, sizeof(Usuarios), 1, arqUsuarios) != 1){
-                        printf("Erro ao atualizar o arquivo.");
-                    }else{
-                        printf("E-mail atualizado com sucesso.\n");
+                    while (livroAntigo && strcmp(livroAntigo->isbn, isbnAntigo) != 0) {
+                        anterior = livroAntigo;
+                        livroAntigo = livroAntigo->prox;
                     }
-                    fclose(arqUsuarios);
-                    return;
-                }
+
+                    if (!livroAntigo) {
+                        printf("Livro com ISBN atual nao encontrado.\n");
+                        return;
+                    }
+
+                    printf("Digite o novo ISBN para o livro: ");
+                    lerStr(isbnNovo, MAX_STRING);
+                    hashNovo = hashISBN(isbnNovo);
+                    livroNovo = tabelaLivros[hashNovo];
+
+                    while (livroNovo && strcmp(livroNovo->isbn, isbnNovo) != 0) {
+                        livroNovo = livroNovo->prox;
+                    }
+
+                    if (livroNovo) {
+                        livroNovo->numCopias += livroAntigo->numCopias;
+
+                        FILE *arq = fopen("ArquivoLivros.dat", "rb+");
+                        if (!arq) {
+                            printf("Erro ao abrir arquivo.\n");
+                            return;
+                        }
+
+                        Livros temp;
+                        while (fread(&temp, sizeof(Livros), 1, arq)) {
+                            if (strcmp(temp.isbn, isbnNovo) == 0) {
+                                temp.numCopias = livroNovo->numCopias;
+                                fseek(arq, -sizeof(Livros), SEEK_CUR);
+                                fwrite(&temp, sizeof(Livros), 1, arq);
+                                break;
+                            }
+                        }
+                        fclose(arq);
+
+                        if (anterior) {
+                            anterior->prox = livroAntigo->prox;
+                        } else {
+                            tabelaLivros[hashAntigo] = livroAntigo->prox;
+                        }
+                        free(livroAntigo);
+
+                        FILE *arqOrig = fopen("ArquivoLivros.dat", "rb");
+                        FILE *arqTemp = fopen("TempLivros.dat", "wb");
+                        if (!arqOrig || !arqTemp) {
+                            printf("Erro ao abrir arquivos temporarios.\n");
+                            return;
+                        }
+
+                        while (fread(&temp, sizeof(Livros), 1, arqOrig)) {
+                            if (strcmp(temp.isbn, isbnAntigo) != 0) {
+                                fwrite(&temp, sizeof(Livros), 1, arqTemp);
+                            }
+                        }
+
+                        fclose(arqOrig);
+                        fclose(arqTemp);
+                        remove("ArquivoLivros.dat");
+                        rename("TempLivros.dat", "ArquivoLivros.dat");
+
+                        printf("ISBN ja existia. Copias somadas e ISBN antigo removido.\n");
+
+                    } else {
+                        if (anterior) {
+                            anterior->prox = livroAntigo->prox;
+                        } else {
+                            tabelaLivros[hashAntigo] = livroAntigo->prox;
+                        }
+
+                        strcpy(livroAntigo->isbn, isbnNovo);
+                        livroAntigo->prox = tabelaLivros[hashNovo];
+                        tabelaLivros[hashNovo] = livroAntigo;
+
+                        FILE *arq = fopen("ArquivoLivros.dat", "rb+");
+                        if (!arq) {
+                            printf("Erro ao abrir arquivo.\n");
+                            return;
+                        }
+
+                        Livros temp;
+                        while (fread(&temp, sizeof(Livros), 1, arq)) {
+                            if (strcmp(temp.isbn, isbnAntigo) == 0) {
+                                strcpy(temp.isbn, isbnNovo);
+                                fseek(arq, -sizeof(Livros), SEEK_CUR);
+                                fwrite(&temp, sizeof(Livros), 1, arq);
+                                break;
+                            }
+                        }
+                        fclose(arq);
+                        printf("ISBN atualizado com sucesso.\n");
+                    }
+
+                case 2:  // título
+                    printf("Digite o ISBN do livro: ");
+                    lerStr(isbn, MAX_STRING);
+                    ISBNhash = hashISBN(isbn);
+                    atualB = tabelaLivros[ISBNhash];
+                    while (atualB != NULL) {
+                        if (strcmp(atualB->isbn, isbn) == 0) {
+                            printf("Digite o novo Titulo do livro: ");
+                            lerStr(novoTitulo, MAX_STRING);
+                            strcpy(atualB->titulo, novoTitulo);
+                            printf("Titulo atualizado para: %s\n", novoTitulo);
+                            atualizarArquivoLivro();
+                            return;
+                        }
+                        atualB = atualB->prox;
+                    }
+                    printf("Livro nao encontrado.\n\n");
+                    break;
+
+                case 3:  // autor
+                    printf("Digite o ISBN do livro: ");
+                    lerStr(isbn, MAX_STRING);
+                    ISBNhash = hashISBN(isbn);
+                    atualB = tabelaLivros[ISBNhash];
+                    while (atualB != NULL) {
+                        if (strcmp(atualB->isbn, isbn) == 0) {
+                            printf("Digite o novo Autor do livro: ");
+                            lerStr(novoAutor, MAX_STRING);
+                            strcpy(atualB->autor, novoAutor);
+                            printf("Autor atualizado para: %s\n", novoAutor);
+                            atualizarArquivoLivro();
+                            return;
+                        }
+                        atualB = atualB->prox;
+                    }
+                    printf("Livro nao encontrado.\n\n");
+                    break;
+
+                case 4:  // ano
+                    printf("Digite o ISBN do livro: ");
+                    lerStr(isbn, MAX_STRING);
+                    ISBNhash = hashISBN(isbn);
+                    atualB = tabelaLivros[ISBNhash];
+                    while (atualB != NULL) {
+                        if (strcmp(atualB->isbn, isbn) == 0) {
+                            printf("Digite o novo Ano do livro: ");
+                            scanf("%d", &novoAno);
+                            lerStr(tempString, MAX_STRING);
+                            atualB->ano = novoAno;
+                            printf("Ano atualizado para: %d\n", novoAno);
+                            atualizarArquivoLivro();
+                            return;
+                        }
+                        atualB = atualB->prox;
+                    }
+                    printf("Livro nao encontrado.\n\n");
+                    break;
+
+                case 5:  // editora
+                    printf("Digite o ISBN do livro: ");
+                    lerStr(isbn, MAX_STRING);
+                    ISBNhash = hashISBN(isbn);
+                    atualB = tabelaLivros[ISBNhash];
+                    while (atualB != NULL) {
+                        if (strcmp(atualB->isbn, isbn) == 0) {
+                            printf("Digite a nova Editora do livro: ");
+                            lerStr(novoEditora, MAX_STRING);
+                            strcpy(atualB->editora, novoEditora);
+                            printf("Editora atualizada para: %s\n", novoEditora);
+                            atualizarArquivoLivro();
+                            return;
+                        }
+                        atualB = atualB->prox;
+                    }
+                    printf("Livro nao encontrado.\n\n");
+                    break;
+
+                case 6:
+                    printf("Voltando ao menu anterior...\n");
+                    break;
             }
-            fclose(arqUsuarios);
-            printf("Usuario nao encontrado no arquivo.\n");
-            return;
-        }
-        atual = atual->prox;
+            break;
+
+        case 2:
+            printf("---------------MENU-----------------\n");
+            printf("1-ID\n");
+            printf("2-Nome\n");
+            printf("3-E-mail\n");
+            printf("4-Telefone\n");
+            printf("5-Voltar\n");
+            printf("Escolha um dado para atualiza-lo: ");
+            scanf("%d", &opcUsuario);
+            lerStr(tempString, MAX_STRING);
+            switch (opcUsuario) {
+                case 1:  // id
+                    ;
+                    int idAntigo, idNovo;
+                    int hashAntigo, hashNovo;
+                    Usuarios *usuarioAntigo = NULL, *usuarioNovo = NULL, *anterior = NULL;
+
+                    printf("Digite o ID atual do usuario: ");
+                    scanf("%d", &idAntigo);
+                    lerStr(tempString, MAX_STRING);
+                    hashAntigo = hashID(idAntigo);
+                    usuarioAntigo = tabelaUsuarios[hashAntigo];
+                    if(usuarioAntigo->ativo == 0){
+                        printf("Usuario inativo.\n\n");
+                        return;
+                    }else{
+                        while (usuarioAntigo && usuarioAntigo->id != idAntigo) {
+                        anterior = usuarioAntigo;
+                        usuarioAntigo = usuarioAntigo->prox;
+                    }
+
+                    if (!usuarioAntigo) {
+                        printf("Usuario com ID atual nao encontrado.\n");
+                        return;
+                    }
+
+                    printf("Digite o novo ID para o usuario: ");
+                    scanf("%d", &idNovo);
+                    lerStr(tempString, MAX_STRING);
+                    hashNovo = hashID(idNovo);
+                    usuarioNovo = tabelaUsuarios[hashNovo];
+
+                    while (usuarioNovo && usuarioNovo->id != idNovo) {
+                        usuarioNovo = usuarioNovo->prox;
+                    }
+
+                    if (usuarioNovo) {
+                        printf("ID novo ja existe. Nao eh possivel atualizar.\n");
+                        return;
+                    } else {
+                        usuarioAntigo->id = idNovo;
+
+                        if (anterior) {
+                            anterior->prox = usuarioAntigo->prox;
+                        } else {
+                            tabelaUsuarios[hashAntigo] = usuarioAntigo->prox;
+                        }
+
+                        usuarioAntigo->prox = tabelaUsuarios[hashNovo];
+                        tabelaUsuarios[hashNovo] = usuarioAntigo;
+
+                        FILE *arqOrig = fopen("ArquivoUsuarios.dat", "rb");
+                        FILE *arqTemp = fopen("TempUsuarios.dat", "wb");
+                        if (!arqOrig || !arqTemp) {
+                            printf("Erro ao abrir arquivos temporarios.\n");
+                            return;
+                        }
+
+                        Usuarios temp;
+                        while (fread(&temp, sizeof(Usuarios), 1, arqOrig)) {
+                            if (temp.id == idAntigo) {
+                                temp.id = idNovo;
+                            }
+                            fwrite(&temp, sizeof(Usuarios), 1, arqTemp);
+                        }
+
+                        fclose(arqOrig);
+                        fclose(arqTemp);
+                        remove("ArquivoUsuarios.dat");
+                        rename("TempUsuarios.dat", "ArquivoUsuarios.dat");
+
+                        printf("ID atualizado com sucesso.\n");
+                    }
+                    break;
+                    }
+                case 2:  // nome
+                    printf("Digite o ID do usuario: ");
+                    scanf("%d", &id);
+                    lerStr(tempString, MAX_STRING);
+                    IDhash = hashID(id);
+                    atual = tabelaUsuarios[IDhash];
+                    while (atual != NULL) {
+                        if (atual->id == id && atual->ativo == 1) {
+                            printf("Digite o novo nome do usuario: ");
+                            lerStr(novoNome, MAX_STRING);
+                            strcpy(atual->nome, novoNome);
+                            printf("Nome atualizado para: %s\n", novoNome);
+                            atualizarArquivoUsuario();
+                            return;
+                        }
+                        atual = atual->prox;
+                    }
+                    printf("Usuario nao encontrado ou esta inativo.\n\n");
+                    break;
+
+                case 3:  // e-mail
+                    printf("Digite o ID do usuario: ");
+                    scanf("%d", &id);
+                    lerStr(tempString, MAX_STRING);
+                    IDhash = hashID(id);
+                    atual = tabelaUsuarios[IDhash];
+                    while (atual != NULL) {
+                        if (atual->id == id && atual->ativo == 1) {
+                            printf("Digite o novo e-mail: ");
+                            lerStr(novoEmail, MAX_STRING);
+                            strcpy(atual->email, novoEmail);
+                            printf("E-mail atualizado para: %s\n", novoEmail);
+                            atualizarArquivoUsuario();
+                            return;
+                        }
+                        atual = atual->prox;
+                    }
+                    printf("Usuario nao encontrado ou esta inativo.\n\n");
+                    break;
+
+                case 4:  // telefone
+                    printf("Digite o ID do usuario: ");
+                    scanf("%d", &id);
+                    lerStr(tempString, MAX_STRING);
+                    IDhash = hashID(id);
+                    atual = tabelaUsuarios[IDhash];
+                    while (atual != NULL) {
+                        if (atual->id == id && atual->ativo == 1) {
+                            printf("Digite o novo telefone do usuario (tudo junto): ");
+                            lerStr(atual->telefone, MAX_STRING);
+                            printf("Telefone atualizado!\n");
+                            atualizarArquivoUsuario();
+                            return;
+                        }
+                        atual = atual->prox;
+                    }
+                    printf("Usuario nao encontrado ou esta inativo.\n\n");
+                    break;
+
+                case 5:
+                    printf("Voltando ao menu anterior...\n");
+                    break;
+            }
+            break;
+
+        case 3:
+            printf("Voltando ao menu principal...\n");
+            break;
     }
-    printf("Usuario nao encontrado ou esta inativo.\n");
 }
-*/
 
-/*
-Livros* ConsultarISBN(int x, char  isbn){
-    Livros* atual = tabelaLivros[x];
-
-    while(atual!=NULL){
-        if(strcmp(atual->isbn,isbn)==0){
-            return atual;
-        }
-        atual = atual->prox;
+void atualizarArquivoLivro() {
+    FILE *arqLivros = fopen("ArquivoLivros.dat", "wb");
+    if (arqLivros == NULL) {
+        printf("Erro ao abrir arquivo de livros para atualizar.\n");
+        return;
     }
-    printf("O livro não existe!\n");
-    free(atual);
-    return NULL;
+
+    for (int i = 0; i < MAX_TAM; i++) {
+        Livros* atual = tabelaLivros[i];
+        while (atual != NULL) {
+            if (atual->isbn[0] != '\0') {
+                fwrite(atual, sizeof(Livros), 1, arqLivros);
+            }
+            atual = atual->prox;
+        }
+    }
+    fclose(arqLivros);
 }
 
-void exibirLivro(Livros* livro){
-    printf("----------Informações do Livro----------\n");
-    printf("ISBN: %s\n",livro->isbn);
-    printf("Título: %s\n",livro->titulo);
-    printf("Autor: %s\n",livro->autor);
-    printf("Editora: %s\n",livro->editora);
-    printf("Ano: %d\n",livro->ano);
-    printf("Cópias: %d\n\n",livro->numCopias);
+
+void atualizarArquivoUsuario() {
+    FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "wb");
+    if (arqUsuarios == NULL) {
+        printf("Erro ao abrir arquivo de usuarios para atualizar.\n");
+        return;
+    }
+
+    for (int i = 0; i < MAX_TAM; i++) {
+        Usuarios* atual = tabelaUsuarios[i];
+        while (atual != NULL) {
+            fwrite(atual, sizeof(Usuarios), 1, arqUsuarios);
+            atual = atual->prox;
+        }
+    }
+    fclose(arqUsuarios);
 }
-*/
 
-// gcc main_projeto.c projeto.c -o hash.exe
-// ./hash
-
-void emprestarLivro() {
+void emprestarLivro(){  
     char isbn[20];
     int id;
     char tempString[MAX_STRING];
@@ -376,7 +725,7 @@ void devolutivaLivros() {
     int hashL = hashISBN(isbn);
     Livros* livro = ConsultarISBN(hashL, isbn);
     if (livro == NULL) {
-        printf("Livro nao encontrado.\n");
+        printf("Livro nao encontrado.\n\n");
         return;
     }
     
@@ -386,7 +735,7 @@ void devolutivaLivros() {
     int hashU = hashID(id);
     Usuarios* user = ConsultarID(hashU, id);
     if (user == NULL || user->ativo == 0) {
-        printf("Usuario nao encontrado ou inativo.\n");
+        printf("Usuario nao encontrado ou inativo.\n\n");
         return;
     }
 
@@ -401,7 +750,7 @@ void devolutivaLivros() {
     
     FILE* arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if (arqLivros == NULL) {
-        printf("Erro ao abrir o arquivo de livros.\n");
+        printf("Erro ao abrir o arquivo de livros.\n\n");
         return;
     }
     Livros tempLivro;
@@ -416,7 +765,7 @@ void devolutivaLivros() {
     fclose(arqLivros);
     FILE* transacoes = fopen("Transacoes.txt", "a");
     if (transacoes == NULL) {
-        printf("Erro ao abrir arquivo de transacoes.\n");
+        printf("Erro ao abrir arquivo de transacoes.\n\n");
         return;
     }
     fprintf(transacoes, "DEVOLUCAO - Livro ISBN: %s - Usuario ID: %d", isbn, id);
@@ -431,3 +780,28 @@ void devolutivaLivros() {
         printf("Multa a ser paga: R$%.2f\n", multa);
     }
 }
+
+void desativarUsuario(){
+    int id;
+    char tempString[MAX_STRING];
+    printf("Digite o ID do usuario: ");
+    scanf("%d", &id);
+    lerStr(tempString, MAX_STRING);
+    
+    int IDhash = hashID(id);
+    Usuarios* atual = tabelaUsuarios[IDhash];
+
+    while (atual != NULL) {
+        if (atual->id == id && atual->ativo == 1) {
+                atual->ativo = 0;
+                printf("Usuario foi inativado.\n");
+                atualizarArquivoUsuario();
+                    return;
+                }
+                atual = atual->prox;
+    }
+    printf("Usuario nao encontrado ou esta inativo.\n\n");
+}   
+
+// gcc main_projeto.c projeto.c -o hash.exe
+// ./hash

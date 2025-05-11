@@ -15,7 +15,7 @@ typedef struct Usuarios{
     int id;
     char nome[MAX_STRING];
     char email[MAX_STRING];
-    int telefone;
+    char telefone[MAX_STRING];
     int ativo;
     struct Usuarios* prox;
 } Usuarios;
@@ -29,14 +29,22 @@ void inicializarTabelas();
 void lerStr(char *str, int tam);
 int hashISBN(char* isbn);
 int hashID(int id);
+
+// Métodos de Atualizar
 void atualizarNumCopias(char* isbn);
+void atualizarDado();
+void atualizarArquivoLivro();
+void atualizarArquivoUsuario();
+
+// Métodos dos Livros 
+Livros* ConsultarISBN(int x, char* isbn);
+void cadastrarLivro(char* isbn);
+void exibirLivro(Livros* Livro);
 void emprestarLivro();
 void devolutivaLivros();
 
-Livros* ConsultarISBN(int x, char* isbn);
-void cadastrarLivro(char* isbn);
-void exibirLivro(Livros* livro);
-
+// Métodos dos Usuários
 Usuarios* ConsultarID(int x, int id);
 void cadastrarUsuario();
-void exibirUsuario(Usuarios* user);
+void exibirUsuario(Usuarios* Usuario);
+void desativarUsuario();
