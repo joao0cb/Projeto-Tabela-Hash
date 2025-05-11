@@ -35,7 +35,7 @@ void lerStr(char *str, int tam) {
 }
 
 void exibirLivro(Livros* livro){
-    printf("----------Informacoes do Livro----------\n");
+    printf("\n----------Informacoes do Livro----------\n");
     printf("ISBN: %s\n",livro->isbn);
     printf("Titulo: %s\n",livro->titulo);
     printf("Autor: %s\n",livro->autor);
@@ -97,6 +97,7 @@ void cadastrarLivro(char* isbn){
     int ISBNhash = hashISBN(Livro->isbn);
     Livro->prox = tabelaLivros[ISBNhash];
     tabelaLivros[ISBNhash] = Livro;
+    Livro->prox = NULL;
     FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if(arqLivros == NULL) {
         arqLivros = fopen("ArquivoLivros.dat", "w+b");
@@ -135,6 +136,7 @@ void cadastrarUsuario() {
     int IDhash = hashID(Usuario->id);
     Usuario->prox = tabelaUsuarios[IDhash];
     tabelaUsuarios[IDhash] = Usuario;
+    Usuario->prox = NULL;
     FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb+");
     if(arqUsuarios == NULL) {
         arqUsuarios = fopen("ArquivoUsuarios.dat", "w+b");
@@ -328,38 +330,39 @@ void emprestarLivro() {
 void descarregarArquivos() {
     FILE *arqLivros = fopen("ArquivoLivros.dat", "rb");
     FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb");
-    if(arqLivros == NULL || arqUsuarios == NULL) {
+    if (arqLivros == NULL || arqUsuarios == NULL) {
         printf("Erro ao abrir arquivos.\n");
         return;
     }
     Livros temp;
-    while(fread(&temp, sizeof(Livros), 1, arqLivros)) {
-        int ISBNhash = hashISBN(temp.isbn);
-        Livros* novo = malloc(sizeof(Livros));
-        if(novo == NULL) {
-            printf("Erro de alocação.\n");
-            fclose(arqLivros);
-            return;
+    while (fread(&temp, sizeof(Livros), 1, arqLivros) == 1) {
+        Livros* novo = (Livros*)malloc(sizeof(Livros));
+        if (novo == NULL) {
+            printf("Erro de alocação de livro.\n");
+            break;
         }
+        int ISBNhash = hashISBN(temp.isbn);
         *novo = temp;
         novo->prox = tabelaLivros[ISBNhash];
         tabelaLivros[ISBNhash] = novo;
     }
 
     Usuarios temp2;
-    while(fread(&temp2, sizeof(Livros), 1, arqUsuarios)) {
-        int IDhash = hashID(temp2.id);
-        Usuarios* novo2 = malloc(sizeof(Livros));
-        if(novo2 == NULL) {
-            printf("Erro de alocação.\n");
-            fclose(arqUsuarios);
-            return;
+    while (fread(&temp2, sizeof(Usuarios), 1, arqUsuarios) == 1) {
+        Usuarios* novo2 = (Usuarios*)malloc(sizeof(Usuarios));
+        if (novo2 == NULL) {
+            printf("Erro de alocação de usuário.\n");
+            break;
         }
+        int IDhash = hashID(temp2.id);
         *novo2 = temp2;
         novo2->prox = tabelaUsuarios[IDhash];
         tabelaUsuarios[IDhash] = novo2;
     }
+    fclose(arqLivros);
+    fclose(arqUsuarios);
 }
+
 
 void devolutivaLivros() {
     char isbn[20];
@@ -367,14 +370,11 @@ void devolutivaLivros() {
     char tempString[MAX_STRING];
     int diasAtraso = 0;
     float multa = 0.0;
-
     printf("\n------DEVOLUCAO DE LIVRO------\n");
-    
     printf("Digite o ISBN do livro: ");
     lerStr(isbn, MAX_STRING);
     int hashL = hashISBN(isbn);
     Livros* livro = ConsultarISBN(hashL, isbn);
-
     if (livro == NULL) {
         printf("Livro nao encontrado.\n");
         return;
@@ -385,7 +385,6 @@ void devolutivaLivros() {
     lerStr(tempString, MAX_STRING);
     int hashU = hashID(id);
     Usuarios* user = ConsultarID(hashU, id);
-
     if (user == NULL || user->ativo == 0) {
         printf("Usuario nao encontrado ou inativo.\n");
         return;
@@ -394,12 +393,10 @@ void devolutivaLivros() {
     printf("Digite o numero de dias de atraso (0 se nenhum): ");
     scanf("%d", &diasAtraso);
     lerStr(tempString, MAX_STRING);
-    
     if (diasAtraso > 0) {
         multa = diasAtraso * 0.50; 
         printf("Multa calculada: R$%.2f\n", multa);
     }
-    
     livro->numCopias++;
     
     FILE* arqLivros = fopen("ArquivoLivros.dat", "rb+");
@@ -407,7 +404,6 @@ void devolutivaLivros() {
         printf("Erro ao abrir o arquivo de livros.\n");
         return;
     }
-    
     Livros tempLivro;
     while (fread(&tempLivro, sizeof(Livros), 1, arqLivros)) {
         if (strcmp(tempLivro.isbn, isbn) == 0) {
@@ -418,21 +414,17 @@ void devolutivaLivros() {
         }
     }
     fclose(arqLivros);
-
     FILE* transacoes = fopen("Transacoes.txt", "a");
     if (transacoes == NULL) {
         printf("Erro ao abrir arquivo de transacoes.\n");
         return;
     }
-    
     fprintf(transacoes, "DEVOLUCAO - Livro ISBN: %s - Usuario ID: %d", isbn, id);
     if (diasAtraso > 0) {
         fprintf(transacoes, " - Dias de atraso: %d - Multa: R$%.2f", diasAtraso, multa);
     }
     fprintf(transacoes, "\n");
-    
     fclose(transacoes);
-    
     printf("Devolucao registrada com sucesso!\n");
     printf("Numero atual de copias disponiveis: %d\n", livro->numCopias);
     if (multa > 0) {

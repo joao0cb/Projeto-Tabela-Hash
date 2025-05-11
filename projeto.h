@@ -24,6 +24,7 @@ typedef struct Usuarios{
 extern Livros* tabelaLivros[MAX_TAM];
 extern Usuarios* tabelaUsuarios[MAX_TAM];
 
+void descarregarArquivos();
 void inicializarTabelas();
 void lerStr(char *str, int tam);
 int hashISBN(char* isbn);
@@ -39,4 +40,3 @@ void exibirLivro(Livros* livro);
 Usuarios* ConsultarID(int x, int id);
 void cadastrarUsuario();
 void exibirUsuario(Usuarios* user);
-

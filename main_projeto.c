@@ -5,13 +5,14 @@
 #include "projeto.h"
 
 int main() {
+    inicializarTabelas();
+    descarregarArquivos();
     Livros* Livro;
     Usuarios* Usuario;
     int opc;
     char isbn[20];
     int id;
     char tempString[MAX_STRING];
-    inicializarTabelas();
     do {
     printf("---------------MENU-----------------\n");
     printf("1-Cadastrar Livro\n");
@@ -34,7 +35,7 @@ int main() {
             Livro = ConsultarISBN(ISBNhash,isbn);
             if(Livro == NULL){
                 cadastrarLivro(isbn);
-                printf("Livro cadastrado com sucesso!\n");
+                printf("Livro cadastrado com sucesso!\n\n");
             }else{
                 char resp[3];
                 printf("O livro ja existe na biblioteca\nDeseja adicionar uma nova copia? Resposta(S/N): ");
@@ -79,6 +80,8 @@ int main() {
             break;
         case 7:
             devolutivaLivros();
+            break;
+        case 0:
             break;
         default:
             printf("Opcao invalida!\n");
