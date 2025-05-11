@@ -20,6 +20,7 @@ int main() {
     printf("4-Consultar Usuario\n");
     printf("5-Atualizar o Numero de Copias\n");    
     printf("6-Emprestimo de Livros\n");   
+    printf("7-Devolutiva de Livros\n");  
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
@@ -76,10 +77,13 @@ int main() {
         case 6:
             emprestarLivro();
             break;
+        case 7:
+            devolutivaLivros();
+            break;
         default:
             printf("Opcao invalida!\n");
             break;
-        }
+                }
     } while(opc !=0);
     return 0;
 }
