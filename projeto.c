@@ -274,7 +274,7 @@ void emprestarLivro() {
     int id;
     char tempString[MAX_STRING];
 
-    printf("\n------EMPRESTIMO DE LIVRO------\n");
+    printf("\n\n------EMPRESTIMO DE LIVRO------\n");
     printf("Digite o ISBN do livro: ");
     lerStr(isbn, MAX_STRING);
     int hashL = hashISBN(isbn);
@@ -323,4 +323,40 @@ void emprestarLivro() {
     fprintf(emprestimos, "Usuario com ID %d pegou o livro ISBN %s emprestado\n", id, isbn);
     fclose(emprestimos);
     printf("Emprestimo realizado com sucesso!\n");
+}
+
+void descarregarArquivos() {
+    FILE *arqLivros = fopen("ArquivoLivros.dat", "rb");
+    FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb");
+    if(arqLivros == NULL || arqUsuarios == NULL) {
+        printf("Erro ao abrir arquivos.\n");
+        return;
+    }
+    Livros temp;
+    while(fread(&temp, sizeof(Livros), 1, arqLivros)) {
+        int ISBNhash = hashISBN(temp.isbn);
+        Livros* novo = malloc(sizeof(Livros));
+        if(novo == NULL) {
+            printf("Erro de alocação.\n");
+            fclose(arqLivros);
+            return;
+        }
+        *novo = temp;
+        novo->prox = tabelaLivros[ISBNhash];
+        tabelaLivros[ISBNhash] = novo;
+    }
+
+    Usuarios temp2;
+    while(fread(&temp2, sizeof(Livros), 1, arqUsuarios)) {
+        int IDhash = hashID(temp2.id);
+        Usuarios* novo2 = malloc(sizeof(Livros));
+        if(novo2 == NULL) {
+            printf("Erro de alocação.\n");
+            fclose(arqUsuarios);
+            return;
+        }
+        *novo2 = temp2;
+        novo2->prox = tabelaUsuarios[IDhash];
+        tabelaUsuarios[IDhash] = novo2;
+    }
 }
