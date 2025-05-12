@@ -205,7 +205,6 @@ void atualizarDado() {
     int novoID;
     int IDhash;
     int ISBNhash;
-    char novoTelefone[MAX_STRING];
     char isbn[MAX_STRING];
     char tempString[MAX_STRING];
     char novoISBN[MAX_STRING];
@@ -800,7 +799,7 @@ void desativarUsuario(){
                 }
                 atual = atual->prox;
     }
-    printf("Usuario nao encontrado ou esta inativo.\n\n");
+    printf("Usuario nao encontrado ou inativo.\n\n");
 }   
 
 // gcc main_projeto.c projeto.c -o hash.exe
