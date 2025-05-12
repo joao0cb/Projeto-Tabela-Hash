@@ -8,7 +8,7 @@ typedef struct Livros{
     int ano;
     char editora[MAX_STRING];
     int numCopias;
-    int numEmprestimos = 0;
+    int numEmprestimos;
     struct Livros* prox;
 } Livros;   
 
