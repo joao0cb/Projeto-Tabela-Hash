@@ -19,10 +19,10 @@ int main() {
     printf("2-Consultar Livro\n");
     printf("3-Cadastrar Usuario\n");
     printf("4-Consultar Usuario\n");
-    printf("5-Atualizar o Numero de Copias\n");
-    printf("6-Atualizar Dado\n");   
-    printf("7-Emprestimo de Livros\n");   
-    printf("8-Devolutiva de Livros\n");
+    printf("5-Atualizar Dado\n");   
+    printf("6-Emprestimo de Livros\n");   
+    printf("7-Devolutiva de Livros\n");
+    printf("8-Ativar Usuario\n");
     printf("9-Desativar Usuario\n");
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
@@ -74,18 +74,16 @@ int main() {
             }
             break;
         case 5:
-            printf("Digite o ISBN do livro: ");
-            lerStr(isbn, MAX_STRING);   
-            atualizarNumCopias(isbn);
-            break;
-        case 6:
             atualizarDado();
             break;
-        case 7:
+        case 6:
             emprestarLivro();
             break;
-        case 8:
+        case 7:
             devolutivaLivros();
+            break;
+        case 8:
+            ativarUsuario();
             break;
         case 9:
             desativarUsuario();

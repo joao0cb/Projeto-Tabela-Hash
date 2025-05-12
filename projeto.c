@@ -41,7 +41,8 @@ void exibirLivro(Livros* Livro){
     printf("Autor: %s\n", Livro->autor);
     printf("Editora: %s\n", Livro->editora);
     printf("Ano: %d\n", Livro->ano);
-    printf("Copias: %d\n\n", Livro->numCopias);
+    printf("Copias: %d\n", Livro->numCopias);
+    printf("Emprestimos: %d\n\n",Livro->numEmprestimos);
 }
 
 void exibirUsuario(Usuarios* Usuario){
@@ -230,7 +231,8 @@ void atualizarDado() {
             printf("3-Autor\n");
             printf("4-Ano\n");
             printf("5-Editora\n");
-            printf("6-Voltar\n");
+            printf("6-Numero de Copias\n");
+            printf("7-Voltar\n");
             printf("Escolha um dado para atualiza-lo: ");
             scanf("%d", &opcLivro);
             lerStr(tempString, MAX_STRING);
@@ -421,7 +423,15 @@ void atualizarDado() {
                     break;
 
                 case 6:
+                    printf("Digite o ISBN do livro: ");
+                    lerStr(isbn, MAX_STRING);   
+                    atualizarNumCopias(isbn);
+                    break;
+                case 7:
                     printf("Voltando ao menu anterior...\n");
+                    break; 
+                default:
+                    printf("Opcao invalida!\n");
                     break;
             }
             break;
@@ -573,6 +583,9 @@ void atualizarDado() {
                 case 5:
                     printf("Voltando ao menu anterior...\n");
                     break;
+                default:
+                    printf("Opcao invalida!\n");
+                    break;
             }
             break;
 
@@ -679,7 +692,6 @@ void descarregarArquivos() {
     FILE *arqLivros = fopen("ArquivoLivros.dat", "rb");
     FILE *arqUsuarios = fopen("ArquivoUsuarios.dat", "rb");
     if (arqLivros == NULL || arqUsuarios == NULL) {
-        printf("Erro ao abrir arquivos.\n");
         return;
     }
     Livros temp;
@@ -801,6 +813,28 @@ void desativarUsuario(){
     }
     printf("Usuario nao encontrado ou inativo.\n\n");
 }   
+
+void ativarUsuario(){
+    int id;
+    char tempString[MAX_STRING];
+    printf("Digite o ID do usuario: ");
+    scanf("%d", &id);
+    lerStr(tempString, MAX_STRING);
+    
+    int IDhash = hashID(id);
+    Usuarios* atual = tabelaUsuarios[IDhash];
+
+    while (atual != NULL) {
+        if (atual->id == id && atual->ativo == 0) {
+                atual->ativo = 1;
+                printf("Usuario foi ativado.\n");
+                atualizarArquivoUsuario();
+                    return;
+                }
+                atual = atual->prox;
+    }
+    printf("Usuario nao encontrado ou ja esta ativado.\n\n");
+}
 
 // gcc main_projeto.c projeto.c -o hash.exe
 // ./hash

@@ -8,6 +8,7 @@ typedef struct Livros{
     int ano;
     char editora[MAX_STRING];
     int numCopias;
+    int numEmprestimos;
     struct Livros* prox;
 } Livros;   
 
@@ -47,4 +48,8 @@ void devolutivaLivros();
 Usuarios* ConsultarID(int x, int id);
 void cadastrarUsuario();
 void exibirUsuario(Usuarios* Usuario);
+<<<<<<< HEAD
+void ativarUsuario();
+=======
+>>>>>>> 6a6a67943a51d891f4c9ef9c6075f0fc22ac90dd
 void desativarUsuario();
