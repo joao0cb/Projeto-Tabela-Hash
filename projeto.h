@@ -47,4 +47,5 @@ void devolutivaLivros();
 Usuarios* ConsultarID(int x, int id);
 void cadastrarUsuario();
 void exibirUsuario(Usuarios* Usuario);
+void ativarUsuario();
 void desativarUsuario();
