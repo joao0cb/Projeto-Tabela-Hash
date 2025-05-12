@@ -41,7 +41,8 @@ void exibirLivro(Livros* Livro){
     printf("Autor: %s\n", Livro->autor);
     printf("Editora: %s\n", Livro->editora);
     printf("Ano: %d\n", Livro->ano);
-    printf("Copias: %d\n\n", Livro->numCopias);
+    printf("Copias: %d\n", Livro->numCopias);
+    printf("Emprestimos: %d\n\n",Livro->numEmprestimos);
 }
 
 void exibirUsuario(Usuarios* Usuario){
