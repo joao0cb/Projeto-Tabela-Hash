@@ -78,6 +78,37 @@ Usuarios* ConsultarID(int x, int  id){
     return NULL;
 }
 
+void Livros_Mais_Emprestados(){
+    int x, contador=0;
+    printf("Informe a quantidade de livros mais emprestados que você deseja ver: ");
+    scanf("%d",&x);
+    Livros* v[MAX_TAM];
+    for(int i=0;i<MAX_TAM;i++){
+        Livros* temp = tabelaLivros[i];
+        while(temp!=NULL){
+            v[contador++]=temp;
+            temp=temp->prox;
+        }
+    }
+    if(x>contador){
+        printf("Você solicitou uma quantidade de livros a mais do que existe, será atribuido a quantidade já existente\n");
+        x=contador;
+    }
+    for (int i = 0; i < contador - 1; i++) {
+        for (int j = i + 1; j < contador; j++) {
+            if (v[i]->numEmprestimos < v[j]->numEmprestimos) {
+                Livros* aux = v[i];
+                v[i] = v[j];
+                v[j] = aux;
+            }
+        }
+    }
+    printf("Top %d livros mais emprestados são:\n\n",x);
+    for(int i=0;i<x;i++){
+        exibirLivro(v[i]);
+    }
+}
+
 void cadastrarLivro(char* isbn){
     Livros* Livro = malloc(sizeof(Livros));
     char tempString[MAX_STRING];
@@ -98,6 +129,7 @@ void cadastrarLivro(char* isbn){
     lerStr(tempString, MAX_STRING);
     printf("Digite a editora: ");
     lerStr(Livro->editora, MAX_STRING);
+    Livro->numEmprestimos = 0;
     Livro->prox = NULL;
     FILE *arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if(arqLivros == NULL) {
@@ -662,6 +694,7 @@ void emprestarLivro(){
     }
 
     livro->numCopias--;
+    livro->numEmprestimos++;
     FILE* arqLivros = fopen("ArquivoLivros.dat", "rb+");
     if (arqLivros == NULL) {
         printf("Erro ao abrir o arquivo de livros.\n");
