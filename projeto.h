@@ -48,6 +48,7 @@ void exibirLivro(Livros* Livro);
 void emprestarLivro();
 void devolutivaLivros();
 void Livros_Mais_Emprestados();
+void exibirTodosLivros();
 int validarISBNFormatado(char *isbn);
 
 // Métodos dos Usuários
@@ -56,4 +57,5 @@ void cadastrarUsuario();
 void exibirUsuario(Usuarios* Usuario);
 void ativarUsuario();
 void desativarUsuario();
+void exibirTodosUsuarios();
 int validarEmail(char *email);

@@ -24,9 +24,11 @@ int main() {
     printf("5-Atualizar Dado\n");   
     printf("6-Emprestimo de Livros\n");   
     printf("7-Devolutiva de Livros\n");
-    printf("8-Ativar Usuario\n");
-    printf("9-Desativar Usuario\n");
-    printf("10-Consultar Livros mais emprestados\n");
+    printf("8-Exibir todos Livros\n");
+    printf("9-Exibir todos Usuarios\n");
+    printf("10-Ativar Usuario\n");
+    printf("11-Desativar Usuario\n");
+    printf("12-Consultar Livros mais emprestados\n");
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
@@ -95,12 +97,18 @@ int main() {
             devolutivaLivros();
             break;
         case 8:
-            ativarUsuario();
+            exibirTodosLivros();
             break;
         case 9:
-            desativarUsuario();
+            exibirTodosUsuarios();
             break;
         case 10:
+            ativarUsuario();
+            break;
+        case 11:
+            desativarUsuario();
+            break;
+        case 12:
             Livros_Mais_Emprestados();
             break;
         case 0:
