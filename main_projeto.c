@@ -23,7 +23,8 @@ int main() {
     printf("6-Emprestimo de Livros\n");   
     printf("7-Devolutiva de Livros\n");
     printf("8-Ativar Usuario\n");
-    printf("9-Desativar Usuario\n");
+    printf("9-Consultar Livros mais emprestados\n");
+    printf("10-Desativar Usuario\n");
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
@@ -86,6 +87,9 @@ int main() {
             ativarUsuario();
             break;
         case 9:
+            Livros_Mais_Emprestados();
+            break;
+        case 10:
             desativarUsuario();
             break;
         case 0:
