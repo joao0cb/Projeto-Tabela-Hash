@@ -25,11 +25,15 @@ typedef struct Usuarios{
 extern Livros* tabelaLivros[MAX_TAM];
 extern Usuarios* tabelaUsuarios[MAX_TAM];
 
+//
 void descarregarArquivos();
 void inicializarTabelas();
 void lerStr(char *str, int tam);
 int hashISBN(char* isbn);
 int hashID(int id);
+int apenasNumeros(char *str);
+int apenasLetras(char *str);
+int lerInteiro();
 
 // Métodos de Atualizar
 void atualizarNumCopias(char* isbn);
@@ -44,13 +48,12 @@ void exibirLivro(Livros* Livro);
 void emprestarLivro();
 void devolutivaLivros();
 void Livros_Mais_Emprestados();
+int validarISBNFormatado(char *isbn);
 
 // Métodos dos Usuários
 Usuarios* ConsultarID(int x, int id);
 void cadastrarUsuario();
 void exibirUsuario(Usuarios* Usuario);
-<<<<<<< HEAD
 void ativarUsuario();
-=======
->>>>>>> 6a6a67943a51d891f4c9ef9c6075f0fc22ac90dd
 void desativarUsuario();
+int validarEmail(char *email);

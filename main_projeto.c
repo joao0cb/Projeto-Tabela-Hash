@@ -1,6 +1,8 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <time.h>
 
 #include "projeto.h"
 
@@ -23,8 +25,8 @@ int main() {
     printf("6-Emprestimo de Livros\n");   
     printf("7-Devolutiva de Livros\n");
     printf("8-Ativar Usuario\n");
-    printf("9-Consultar Livros mais emprestados\n");
-    printf("10-Desativar Usuario\n");
+    printf("9-Desativar Usuario\n");
+    printf("10-Consultar Livros mais emprestados\n");
     printf("0-Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
@@ -32,8 +34,16 @@ int main() {
     switch(opc){
         case 1:
             printf("\nCADASTRO LIVRO\n");
-            printf("Insira o ISBN do livro: ");
-            lerStr(isbn, 20);
+            int valido = 0;
+            while (!valido) {
+                printf("Insira o ISBN no formato XXX-X+-X+-X+-X: ");
+                lerStr(isbn, 30);
+                if(validarISBNFormatado(isbn)) {
+                    valido = 1;
+                }else {
+                    printf("ISBN invalido. Certifique-se de usar o formato correto com apenas numeros e 4 hifens.\n");
+                }
+            }
             int ISBNhash = hashISBN(isbn);
             Livro = ConsultarISBN(ISBNhash,isbn);
             if(Livro == NULL){
@@ -61,6 +71,7 @@ int main() {
             break;
         case 3:
             cadastrarUsuario();
+            printf("Usuario foi cadastrado com sucesso!\n");
             break;
         case 4:
             printf("Insira o ID do usuario: ");
@@ -87,10 +98,10 @@ int main() {
             ativarUsuario();
             break;
         case 9:
-            Livros_Mais_Emprestados();
+            desativarUsuario();
             break;
         case 10:
-            desativarUsuario();
+            Livros_Mais_Emprestados();
             break;
         case 0:
             break;
