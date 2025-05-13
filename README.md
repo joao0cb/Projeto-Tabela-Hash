@@ -21,7 +21,7 @@ O sistema utiliza duas tabelas hash para gerenciar os dados dos livros e usuári
 
 - **Tabela de livros**: Utiliza o ISBN como chave para armazenar os livros.
 
-- **Tabela de usuários**: Utiliza o ID do usuário como chave para armazenar os dados dos usuários.
+- **Tabela de usuários**: Utiliza o ID do usuário como chave para armazenar os dados dos usuários
 
 Os dados são persistidos em arquivos binários:
 
@@ -29,3 +29,11 @@ Os dados são persistidos em arquivos binários:
 - **`ArquivoUsuarios.dat`**: Armazena os usuários cadastrados.
 - **`ArquivoEmprestimos.log`**: Registra os empréstimos realizados.
 - **`Transacoes.txt`**: Registra todas as transações realizadas, como empréstimos e devoluções de livros.
+
+### Projeto realizado por:
+
+- Bento Guilherme Gomes Oliveira
+- João Victor Castelo Branco de Sena
+- Lucas Mendes Nóbrega
+- Caio Cordeiro Simões De Oliveira
+- Theo Vieira Marcelino
