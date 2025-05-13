@@ -16,12 +16,12 @@ O sistema oferece as seguintes funcionalidades:
 
 - Armazenamento de dados em arquivos binários e logs de transações.
 
-### Estrutura de Dados
+## Estrutura de Dados
 O sistema utiliza duas tabelas hash para gerenciar os dados dos livros e usuários:
 
-**Tabela de livros**: Utiliza o ISBN como chave para armazenar os livros.
+- **Tabela de livros**: Utiliza o ISBN como chave para armazenar os livros.
 
-**Tabela de usuários**: Utiliza o ID do usuário como chave para armazenar os dados dos usuários.
+- **Tabela de usuários**: Utiliza o ID do usuário como chave para armazenar os dados dos usuários.
 
 Os dados são persistidos em arquivos binários:
 
