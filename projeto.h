@@ -43,6 +43,7 @@ void cadastrarLivro(char* isbn);
 void exibirLivro(Livros* Livro);
 void emprestarLivro();
 void devolutivaLivros();
+void Livros_Mais_Emprestados();
 
 // Métodos dos Usuários
 Usuarios* ConsultarID(int x, int id);
