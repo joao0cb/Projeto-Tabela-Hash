@@ -295,28 +295,29 @@ void atualizarDado() {
     Usuarios* atual = NULL;
     Livros* atualB = NULL;
     printf("---------------ATUALIZAR-----------------\n");
-    printf("1-Livro\n");
-    printf("2-Usuario\n");
-    printf("3-Voltar\n");
+    printf("1 - Livro\n");
+    printf("2 - Usuario\n");
+    printf("3 - Voltar\n");
     printf("Escolha uma opcao para atualizar: ");
     scanf("%d", &opc);
     lerStr(tempString, MAX_STRING);
     switch (opc) {
         case 1:
             printf("---------------MENU-----------------\n");
-            printf("1-ISBN\n");
-            printf("2-Titulo\n");
-            printf("3-Autor\n");
-            printf("4-Ano\n");
-            printf("5-Editora\n");
-            printf("6-Numero de Copias\n");
-            printf("7-Voltar\n");
+            printf("1 - ISBN\n");
+            printf("2 - Titulo\n");
+            printf("3 - Autor\n");
+            printf("4 - Ano\n");
+            printf("5 - Editora\n");
+            printf("6 - Numero de Copias\n");
+            printf("7 - Excluir Livro\n");
+            printf("8 - Voltar\n");
             printf("Escolha um dado para atualiza-lo: ");
             scanf("%d", &opcLivro);
             lerStr(tempString, MAX_STRING);
             switch (opcLivro) {
                 case 1:  // isbn
-                    ; // NAO REMOVA ESSE ; POR FAVOR .
+                    ; // NAO REMOVA ESSE ; POR FAVOR.
                     char isbnAntigo[MAX_STRING];
                     char isbnNovo[MAX_STRING];
                     int hashAntigo, hashNovo;
@@ -550,6 +551,9 @@ void atualizarDado() {
                     atualizarNumCopias(isbn);
                     break;
                 case 7:
+                    excluirLivro();
+                    break;
+                case 8:
                     printf("Voltando ao menu anterior...\n");
                     break; 
                 default:
@@ -560,11 +564,11 @@ void atualizarDado() {
 
         case 2:
             printf("---------------MENU-----------------\n");
-            printf("1-ID\n");
-            printf("2-Nome\n");
-            printf("3-E-mail\n");
-            printf("4-Telefone\n");
-            printf("5-Voltar\n");
+            printf("1 - ID\n");
+            printf("2 - Nome\n");
+            printf("3 - E-mail\n");
+            printf("4 - Telefone\n");
+            printf("5 - Voltar\n");
             printf("Escolha um dado para atualiza-lo: ");
             scanf("%d", &opcUsuario);
             lerStr(tempString, MAX_STRING);
@@ -819,6 +823,7 @@ void emprestarLivro() {
     while (fread(&temp, sizeof(Livros), 1, arqLivros)) {
         if (strcmp(temp.isbn, isbn) == 0) {
             temp.numCopias = livro->numCopias;
+            temp.numEmprestimos = livro->numEmprestimos;
             fseek(arqLivros, -sizeof(Livros), SEEK_CUR);
             fwrite(&temp, sizeof(Livros), 1, arqLivros);
             break;
@@ -831,8 +836,16 @@ void emprestarLivro() {
         printf("Erro ao abrir arquivo de emprestimos.\n");
         return;
     }
+    FILE* tempEmprestimos = fopen("TempEmprestimos.log", "a");
+    if (tempEmprestimos == NULL) {
+        printf("Erro ao abrir arquivo de emprestimos.\n");
+        return;
+    }
+
     fprintf(emprestimos, "Usuario com ID %d pegou o livro ISBN %s emprestado na data %02d/%02d/%d\n", id, isbn, dataLocal->tm_mday, dataLocal->tm_mon+1, dataLocal->tm_year+1900);
+    fprintf(tempEmprestimos, "Usuario com ID %d pegou o livro ISBN %s emprestado na data %02d/%02d/%d\n", id, isbn, dataLocal->tm_mday, dataLocal->tm_mon+1, dataLocal->tm_year+1900);
     fclose(emprestimos);
+    fclose(tempEmprestimos);
     printf("Emprestimo realizado com sucesso!\n");
 }
 
@@ -905,7 +918,7 @@ void devolutivaLivros() {
         return;
     }
 
-    FILE* arqEmprestimo = fopen("ArquivoEmprestimo.log", "r");
+    FILE* arqEmprestimo = fopen("TempEmprestimos.log", "r");
     if (arqEmprestimo == NULL) {
         printf("Erro ao abrir o arquivo de emprestimos.\n");
         return;
@@ -913,21 +926,23 @@ void devolutivaLivros() {
 
     int id2, dia, mes, ano;
     char isbn2[MAX_STRING];
+    char linhaParaExcluir[MAX_STRING];
     while (fgets(linha, sizeof(linha), arqEmprestimo) != NULL) {
         if (sscanf(linha, "Usuario com ID %d pegou o livro ISBN %s emprestado na data %d/%d/%d",
                    &id2, isbn2, &dia, &mes, &ano) == 5) {
             if (id == id2 && strcmp(isbn, isbn2) == 0) {
                 registroEncontrado = 1;
+                strncpy(linhaParaExcluir, linha, MAX_STRING);
                 struct tm data = {0};
                 data.tm_mday = dia;
                 data.tm_mon = mes - 1;
                 data.tm_year = ano - 1900;
                 time_t tempo = mktime(&data);
                 double atrasoSegundos = difftime(tempoAtual, tempo);
-                double atrasoDias = (atrasoSegundos - 1296000) / 86400;
+                double atrasoDias = atrasoSegundos/86400;
+                diasAtraso = (int)(atrasoDias-15);
 
-                if (atrasoSegundos > 1296000) {
-                    diasAtraso = (int)atrasoDias;
+                if (diasAtraso > 0) {
                     multa = 0.50f * diasAtraso;
                     printf("Data de devolucao %02d/%02d/%04d ultrapassada! Multa aplicada: R$%.2f\n", 
                            dia, mes, ano, multa);
@@ -936,10 +951,10 @@ void devolutivaLivros() {
             }
         }
     }
-    fclose(arqEmprestimo);
 
     if (!registroEncontrado) {
-        printf("Emprestimo nao encontrado no log. Nenhuma multa aplicada.\n");
+        printf("Emprestimo nao encontrado.\n");
+        return;
     }
 
     livro->numCopias++;
@@ -976,6 +991,22 @@ void devolutivaLivros() {
     if (multa > 0) {
         printf("Multa a ser paga: R$%.2f\n", multa);
     }
+    FILE* arqTemp = fopen("tempEmprestimosAux.log", "w");
+    if (!arqEmprestimo || !arqTemp) {
+        printf("Erro ao processar remocao do registro de emprestimo.\n");
+        return;
+    }
+
+    while (fgets(linha, sizeof(linha), arqEmprestimo) != NULL) {
+        if (strcmp(linha, linhaParaExcluir) != 0) {
+            fputs(linha, arqTemp);
+        }
+    }
+
+    fclose(arqEmprestimo);
+    fclose(arqTemp);
+    remove("tempEmprestimo.log");
+    rename("tempEmprestimosAux.log", "TempEmprestimos.log");
 }
 
 
@@ -1127,6 +1158,55 @@ void exibirTodosUsuarios() {
     }
 }
 
+void excluirLivro() {
+    char isbn[MAX_STRING];
+    printf("Digite o ISBN do livro a ser excluido: ");
+    lerStr(isbn, MAX_STRING);
 
-// gcc main_projeto.c projeto.c -o hash.exe
-// ./hash
+    int isbnHASH = hashISBN(isbn);
+    Livros *atual = tabelaLivros[isbnHASH];
+    Livros *anterior = NULL;
+    int removido = 0;
+
+    while (atual != NULL) {
+        if (strcmp(atual->isbn, isbn) == 0) {
+            // Achou o livro
+            if (anterior == NULL) {
+                // Primeiro da lista
+                tabelaLivros[isbnHASH] = atual->prox;
+            } else {
+                anterior->prox = atual->prox;
+            }
+
+            free(atual);
+            printf("Livro com ISBN %s removido com sucesso.\n", isbn);
+            removido = 1;
+            break;
+        }
+
+        anterior = atual;
+        atual = atual->prox;
+    }
+    if(!removido) {
+        printf("Livro com ISBN %s não encontrado.\n", isbn);
+        return;
+    }
+    FILE *arqOrig = fopen("ArquivoLivros.dat", "rb");
+    FILE *arqTemp = fopen("TempLivros.dat", "wb");
+    if (!arqOrig || !arqTemp) {
+        printf("Erro ao abrir arquivos temporarios.\n");
+        return;
+    }
+
+    Livros temp;
+    while (fread(&temp, sizeof(Livros), 1, arqOrig)) {
+        if (strcmp(temp.isbn, isbn) != 0) {
+            fwrite(&temp, sizeof(Livros), 1, arqTemp);
+        }
+    }
+
+    fclose(arqOrig);
+    fclose(arqTemp);
+    remove("ArquivoLivros.dat");
+    rename("TempLivros.dat", "ArquivoLivros.dat");
+}

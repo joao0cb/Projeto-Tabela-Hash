@@ -40,6 +40,7 @@ void atualizarNumCopias(char* isbn);
 void atualizarDado();
 void atualizarArquivoLivro();
 void atualizarArquivoUsuario();
+void excluirLivro();
 
 // Métodos dos Livros 
 Livros* ConsultarISBN(int x, char* isbn);
