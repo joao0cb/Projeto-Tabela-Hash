@@ -28,7 +28,9 @@ int main() {
     printf("9 - Exibir todos Usuarios\n");
     printf("10 - Ativar Usuario\n");
     printf("11 - Desativar Usuario\n");
-    printf("12 - Consultar Livros mais emprestados\n");
+    printf("12 - Consultar livros mais emprestados\n");
+    printf("13 - Consultar todos os emprestados\n");
+    printf("14 - Consultar usuarios ativos\n");
     printf("0 - Encerrar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opc);
@@ -110,6 +112,12 @@ int main() {
             break;
         case 12:
             Livros_Mais_Emprestados();
+            break;
+        case 13:
+            relatorioEmprestimos();
+            break;
+        case 14:
+            relatorioUsuariosAtivos();
             break;
         case 0:
             break;

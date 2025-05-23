@@ -52,7 +52,7 @@ void exibirUsuario(Usuarios* Usuario){
     printf("ID: %d\n", Usuario->id);
     printf("Nome: %s\n", Usuario->nome);
     printf("Email: %s\n", Usuario->email);
-    printf("Telefone: %s\n\n", Usuario->telefone);
+    printf("Telefone: %s\n", Usuario->telefone);
     if(Usuario->ativo == 0){
         printf("USUARIO DESATIVADO\n\n");
     }
@@ -1022,12 +1022,12 @@ void desativarUsuario(){
 
     while (atual != NULL) {
         if (atual->id == id && atual->ativo == 1) {
-                atual->ativo = 0;
-                printf("Usuario foi inativado.\n");
-                atualizarArquivoUsuario();
-                    return;
-                }
-                atual = atual->prox;
+            atual->ativo = 0;
+            printf("Usuario foi inativado.\n");
+            atualizarArquivoUsuario();
+            return;
+        }
+        atual = atual->prox;
     }
     printf("Usuario nao encontrado ou inativo.\n\n");
 }   
@@ -1138,7 +1138,7 @@ void exibirTodosLivros() {
 
 void exibirTodosUsuarios() {
     int encontrou = 0;
-    printf("\n--- LISTA DE USUARIOS ATIVOS ---\n");
+    printf("\n--- LISTA DE USUARIOS ---\n");
     for (int i = 0; i < MAX_TAM; i++) {
         Usuarios *Usuario = tabelaUsuarios[i];
         while (Usuario != NULL) {
@@ -1209,4 +1209,48 @@ void excluirLivro() {
     fclose(arqTemp);
     remove("ArquivoLivros.dat");
     rename("TempLivros.dat", "ArquivoLivros.dat");
+}
+
+void relatorioUsuariosAtivos() {
+    int encontrou = 0;
+    printf("\n====== RELATORIO DE USUARIOS ATIVOS ======\n");
+
+    for (int i = 0; i < MAX_TAM; i++) {
+        Usuarios *Usuario = tabelaUsuarios[i];
+        while (Usuario != NULL) {
+            if (Usuario->ativo == 1) {
+                encontrou = 1;
+                exibirUsuario(Usuario);
+            }
+            Usuario = Usuario->prox;
+        }
+    }
+
+    if (!encontrou) {
+        printf("Nenhum usuario ativo encontrado.\n");
+    }
+}
+
+void relatorioEmprestimos() {
+    FILE *arq = fopen("ArquivoEmprestimos.log", "r");
+    if (!arq) {
+        printf("Erro ao abrir o arquivo de emprestimos.\n");
+        return;
+    }
+
+    char linha[256];
+    int encontrou = 0;
+
+    printf("\n====== RELATORIO DE EMPRESTIMOS REALIZADOS ======\n");
+
+    while (fgets(linha, sizeof(linha), arq)) {
+        encontrou = 1;
+        printf("%s", linha);
+    }
+
+    if (!encontrou) {
+        printf("Nenhum emprestimo registrado.\n");
+    }
+
+    fclose(arq);
 }

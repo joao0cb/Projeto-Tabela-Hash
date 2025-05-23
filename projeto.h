@@ -59,4 +59,6 @@ void exibirUsuario(Usuarios* Usuario);
 void ativarUsuario();
 void desativarUsuario();
 void exibirTodosUsuarios();
+void relatorioUsuariosAtivos();
+void relatorioEmprestimos();
 int validarEmail(char *email);
