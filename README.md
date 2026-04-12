@@ -45,7 +45,7 @@ Os dados são persistidos em arquivos binários:
 
 # Projeto Testes
 
-Atividade prática de testes de software aplicada sobre um módulo do algoritmo de Tabela Hash desenvolvido em C.
+Atividade prática de testes de software aplicada sobre um módulo do Sistema de Gerenciamento de Biblioteca feita com algoritmo de Tabela Hash desenvolvido em C.
 
 ### Equipe
 - [Bento Guilherme Gomes Oliveira](https://github.com/bnnto)
