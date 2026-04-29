@@ -62,3 +62,11 @@ void exibirTodosUsuarios();
 void relatorioUsuariosAtivos();
 void relatorioEmprestimos();
 int validarEmail(char *email);
+
+
+
+Livros*   inserirLivroNaTabela(const char* isbn, const char* titulo, const char* autor,
+                                const char* editora, int ano, int copias);
+Usuarios* inserirUsuarioNaTabela(int id, const char* nome, const char* email,
+                                  const char* telefone, int ativo);
+void liberarTabelas();

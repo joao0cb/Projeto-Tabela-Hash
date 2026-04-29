@@ -1254,3 +1254,47 @@ void relatorioEmprestimos() {
 
     fclose(arq);
 }
+
+Livros* inserirLivroNaTabela(const char* isbn, const char* titulo, const char* autor,
+                              const char* editora, int ano, int copias) {
+    Livros* novo = (Livros*)malloc(sizeof(Livros));
+    if (!novo) return NULL;
+    strncpy(novo->isbn,    isbn,    MAX_STRING - 1);
+    strncpy(novo->titulo,  titulo,  MAX_STRING - 1);
+    strncpy(novo->autor,   autor,   MAX_STRING - 1);
+    strncpy(novo->editora, editora, MAX_STRING - 1);
+    novo->ano            = ano;
+    novo->numCopias      = copias;
+    novo->numEmprestimos = 0;
+    int h       = hashISBN((char*)isbn);
+    novo->prox  = tabelaLivros[h];
+    tabelaLivros[h] = novo;
+    return novo;
+}
+
+Usuarios* inserirUsuarioNaTabela(int id, const char* nome, const char* email,
+                                  const char* telefone, int ativo) {
+    Usuarios* novo = (Usuarios*)malloc(sizeof(Usuarios));
+    if (!novo) return NULL;
+    novo->id = id;
+    strncpy(novo->nome,     nome,     MAX_STRING - 1);
+    strncpy(novo->email,    email,    MAX_STRING - 1);
+    strncpy(novo->telefone, telefone, MAX_STRING - 1);
+    novo->ativo = ativo;
+    int h       = hashID(id);
+    novo->prox  = tabelaUsuarios[h];
+    tabelaUsuarios[h] = novo;
+    return novo;
+}
+
+void liberarTabelas() {
+    for (int i = 0; i < MAX_TAM; i++) {
+        Livros* l = tabelaLivros[i];
+        while (l) { Livros* n = l->prox; free(l); l = n; }
+        tabelaLivros[i] = NULL;
+
+        Usuarios* u = tabelaUsuarios[i];
+        while (u) { Usuarios* n = u->prox; free(u); u = n; }
+        tabelaUsuarios[i] = NULL;
+    }
+}
