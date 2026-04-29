@@ -40,3 +40,14 @@ Os dados são persistidos em arquivos binários:
 - **`ArquivoUsuarios.dat`**: Armazena os usuários cadastrados.
 - **`ArquivoEmprestimos.log`**: Registra os empréstimos realizados.
 - **`Transacoes.txt`**: Registra todas as transações realizadas, como empréstimos e devoluções de livros.
+
+---
+
+# Projeto Testes
+
+Atividade prática de testes de software aplicada sobre um módulo do Sistema de Gerenciamento de Biblioteca feita com algoritmo de Tabela Hash desenvolvido em C.
+
+### Equipe
+- [Bento Guilherme Gomes Oliveira](https://github.com/bnnto)
+- [João Victor Castelo Branco de Sena](https://github.com/joao0cb)
+- [Lorenna Meneses de Almeida](https://github.com/lorennam)
