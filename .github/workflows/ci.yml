@@ -1,10 +1,6 @@
 name: CI/CD - Sistema de Biblioteca
  
-on:
-  push:
-    branches: [ "**" ]
-  pull_request:
-    branches: [ "**" ]
+on: [push, pull_request]
  
 jobs:
   build-and-test:
@@ -14,16 +10,10 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-      - name: Instalar GCC
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y gcc make
  
       - name: Build do projeto principal
         run: |
-          echo "==> Compilando sistema de biblioteca"
-          gcc -Wall -Wextra -o biblioteca \
-              projeto.c main_projeto.c \
+          gcc -Wall -o biblioteca \
+              src/projeto.c src/main_projeto.c \
               -lm
-          echo "Build principal concluído com sucesso."
+          echo "Build principal concluído."
