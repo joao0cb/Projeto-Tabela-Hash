@@ -17,3 +17,37 @@ jobs:
               src/projeto.c src/main_projeto.c \
               -lm
           echo "Build principal concluído."
+      
+      - name: Executar testes unitários
+        run: |
+          gcc -Wall -o test_unitarios \
+              unity/unity.c src/projeto.c test/test_biblioteca.c \
+              -I src -I unity \
+              -lm
+          ./test_unitarios
+ 
+      - name: Executar testes de integração
+        run: |
+          gcc -Wall -o test_integracao \
+              unity/unity.c src/projeto.c test/test_integracao.c \
+              -I src -I unity \
+              -lm
+          ./test_integracao
+ 
+      - name: Relatório final
+        if: always()
+        run: |
+          echo "     RELATÓRIO FINAL DO PIPELINE CI/CD     "
+          echo "Repositório : ${{ github.repository }}"
+          echo "Branch      : ${{ github.ref_name }}"
+          echo "Commit      : ${{ github.sha }}"
+          echo "Autor       : ${{ github.actor }}"
+          echo "Data/Hora   : $(date '+%d/%m/%Y %H:%M:%S UTC')"
+ 
+      - name: Upload do relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-pipeline
+          path: logs/pipeline-report.txt
+          retention-days: 30
